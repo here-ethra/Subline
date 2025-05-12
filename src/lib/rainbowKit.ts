@@ -10,9 +10,9 @@ import {
   createConfig, 
   createStorage 
 } from 'wagmi';
-import { baseGoerli } from 'wagmi/chains';
+import { base } from 'wagmi/chains';
 
-// Using Base Goerli testnet for development
+// Using Base mainnet for production
 const projectId = 'YOUR_WALLETCONNECT_PROJECT_ID'; // Replace with actual project ID in production
 
 const { connectors } = getDefaultWallets({
@@ -21,9 +21,9 @@ const { connectors } = getDefaultWallets({
 });
 
 export const wagmiConfig = createConfig({
-  chains: [baseGoerli],
+  chains: [base],
   transports: {
-    [baseGoerli.id]: http(),
+    [base.id]: http(),
   },
   connectors,
   storage: createStorage({ storage: window.localStorage }),

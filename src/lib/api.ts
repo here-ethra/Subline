@@ -1,3 +1,4 @@
+
 import OpenAI from "openai";
 
 // Replace with actual API keys in production
@@ -170,11 +171,11 @@ export async function generateArticleContext(article: NewsArticle): Promise<Arti
         messages: [
           {
             role: "system",
-            content: "You are a helpful assistant that provides context for news articles. Generate a comprehensive context including summary, timeline, stakeholders, background, and systems perspective."
+            content: "You are a systems thinker. Analyze the following news article from a systems thinking perspective. Identify the key components of the system involved, feedback loops, stakeholders, patterns, and potential leverage points for change."
           },
           {
             role: "user",
-            content: `Analyze this news article and provide context in JSON format with the following structure:
+            content: `Analyze this news article from a systems thinking perspective and provide context in JSON format with the following structure:
             {
               "summary": "Brief summary of the article",
               "timeline": [
@@ -186,7 +187,7 @@ export async function generateArticleContext(article: NewsArticle): Promise<Arti
                 ...
               ],
               "background": "Background information relevant to understanding this news",
-              "systemsPerspective": "Analysis from a systems thinking perspective"
+              "systemsPerspective": "Analysis identifying key components of the system involved, feedback loops, patterns, and potential leverage points for change."
             }
             
             News article:
