@@ -71,11 +71,12 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
     <header className="sticky top-0 z-30 w-full neo-glass shadow-subline">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center space-x-1">
-          <button 
-            onClick={() => navigate('/')}
-            className="text-xl font-bold text-gradient"
-          >
-            Subline
+          <button onClick={() => navigate('/')} className="p-2">
+            <img
+              src="/subline.png"
+              alt="Subline Logo"
+              className="h-8 w-auto"
+            />
           </button>
         </div>
         
