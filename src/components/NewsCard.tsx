@@ -22,7 +22,7 @@ const NewsCard = ({ article }: NewsCardProps) => {
 
   return (
     <Card 
-      className="subline-card group cursor-pointer overflow-hidden border border-gray-800 bg-black dark:bg-black hover:border-[#7aff62]/40 transition-all duration-300"
+      className="cursor-pointer overflow-hidden border border-gray-800 bg-black hover:border-[#7aff62]/40 transition-all duration-300"
       onClick={handleClick}
     >
       <CardHeader className="p-4 pb-2">

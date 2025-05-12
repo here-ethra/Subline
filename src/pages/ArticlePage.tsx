@@ -23,6 +23,7 @@ const ArticlePage = () => {
   
   const [context, setContext] = useState<ArticleContext | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
   useEffect(() => {
     // If we don't have the article in the state, we would normally fetch it
@@ -32,7 +33,7 @@ const ArticlePage = () => {
         id,
         title: "Article not found in state, this is a fallback",
         description: "This is a fallback description. Normally, we would fetch this article using its ID.",
-        source: "Context Demo",
+        source: "Subline",
         url: "https://example.com",
         published_at: new Date().toISOString(),
       };
@@ -45,11 +46,14 @@ const ArticlePage = () => {
     
     const loadContext = async () => {
       setLoading(true);
+      setError(null);
+      
       try {
         const articleContext = await generateArticleContext(article);
         setContext(articleContext);
       } catch (error) {
         console.error('Failed to generate context:', error);
+        setError('Failed to generate context for this article.');
         toast({
           title: 'Error',
           description: 'Failed to generate context for this article.',
@@ -147,13 +151,18 @@ const ArticlePage = () => {
               <div className="space-y-6">
                 {[...Array(5)].map((_, i) => (
                   <div key={i}>
-                    <Skeleton className="h-6 w-32 mb-3" />
-                    <Skeleton className="h-24 w-full rounded-md" />
+                    <Skeleton className="h-6 w-32 mb-3 bg-gray-800" />
+                    <Skeleton className="h-24 w-full rounded-md bg-gray-800" />
                   </div>
                 ))}
               </div>
+            ) : error ? (
+              <p className="text-center text-gray-500 py-10">
+                {error}
+              </p>
+            ) : context ? (
+              <ContextSection context={context} />
             ) : (
-              context ? <ContextSection context={context} /> : 
               <p className="text-center text-gray-500 py-10">
                 Unable to generate context for this article.
               </p>

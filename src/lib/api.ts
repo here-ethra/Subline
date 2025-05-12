@@ -1,4 +1,3 @@
-
 import OpenAI from "openai";
 
 // News API configuration
@@ -37,6 +36,12 @@ export interface NewsArticle {
   id: string;
 }
 
+// Change point interface for consistent typing
+export interface ChangePoint {
+  area: string;
+  explanation: string;
+}
+
 // Enhanced context analysis interface to include more comprehensive information
 export interface ArticleContext {
   summary: string;
@@ -55,7 +60,7 @@ export interface ArticleContext {
     lessons: string;
   };
   patterns: string;
-  changePoints: string;
+  changePoints: ChangePoint[] | string; // Updated to handle both string and array formats
 }
 
 // Map NewsData.io response to our NewsArticle interface
@@ -295,9 +300,12 @@ Respond in JSON format with these exact fields:
     "lessons": "What can be learned from comparing these situations"
   },
   "patterns": "An analysis of recurring patterns or cycles in this situation",
-  "changePoints": "3-5 specific areas where meaningful change could happen, with brief explanations"
+  "changePoints": [
+    {"area": "Specific area where change can happen", "explanation": "Brief explanation of why this is important"}
+  ]
 }
 
+Make sure changePoints is an array of objects with 'area' and 'explanation' fields.
 Keep your response structured but comprehensive.`
           },
           {
@@ -339,7 +347,7 @@ Keep your response structured but comprehensive.`
               lessons: parsedResponse.globalContext?.lessons || ""
             },
             patterns: parsedResponse.patterns || "",
-            changePoints: parsedResponse.changePoints || ""
+            changePoints: parsedResponse.changePoints || []
           };
           
           console.log("Successfully parsed OpenAI response as JSON");
@@ -402,7 +410,13 @@ function generateMockContext(article: NewsArticle): ArticleContext {
     
     patterns: `This situation follows a familiar pattern where initial policy changes lead to market adaptations, which then trigger further regulatory responses, creating a cycle of adjustment and readjustment.`,
     
-    changePoints: `Three areas where meaningful change could happen: 1) More inclusive stakeholder participation in decision-making processes; 2) Better data collection and transparency about impacts across different demographic groups; 3) Alignment of short-term incentives with long-term sustainability goals; 4) Investment in capacity building for implementing organizations; 5) Regular independent reviews of outcomes against stated objectives.`
+    changePoints: [
+      { area: "Stakeholder Engagement", explanation: "More inclusive participation in decision-making processes" },
+      { area: "Data Transparency", explanation: "Better data collection and transparency about impacts across different demographic groups" },
+      { area: "Incentive Alignment", explanation: "Alignment of short-term incentives with long-term sustainability goals" },
+      { area: "Capacity Building", explanation: "Investment in capacity building for implementing organizations" },
+      { area: "Independent Review", explanation: "Regular independent reviews of outcomes against stated objectives" }
+    ]
   };
 
   // Customize the mock response based on article content
