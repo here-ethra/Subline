@@ -1,5 +1,5 @@
 
-import { Configuration, OpenAIApi } from "openai";
+import OpenAI from "openai";
 
 // Replace with actual API keys in production
 const NEWS_API_KEY = "YOUR_NEWS_API_KEY"; 

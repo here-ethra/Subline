@@ -2,7 +2,7 @@
 import { ArticleContext } from '@/lib/api';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Calendar, Users, Globe, Info, Timeline } from 'lucide-react';
+import { Calendar, Users, Globe, Info, Clock } from 'lucide-react';
 
 interface ContextSectionProps {
   context: ArticleContext;
@@ -25,7 +25,7 @@ const ContextSection = ({ context }: ContextSectionProps) => {
 
       <section>
         <div className="flex items-center gap-2 mb-3">
-          <Timeline className="text-context-blue" size={18} />
+          <Clock className="text-context-blue" size={18} />
           <h3 className="text-lg font-medium">Timeline</h3>
         </div>
         <Card className="p-4 bg-gray-50 dark:bg-gray-800">

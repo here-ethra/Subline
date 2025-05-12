@@ -1,7 +1,8 @@
 
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAccount, useEnsName } from 'wagmi';
-import { useNavigate, useEffect } from 'react-router-dom';
+import { useAccount } from 'wagmi';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const WelcomePage = () => {
   const { isConnected } = useAccount();

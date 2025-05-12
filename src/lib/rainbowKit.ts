@@ -1,30 +1,32 @@
 
 import '@rainbow-me/rainbowkit/styles.css';
 
-import { getDefaultWallets } from '@rainbow-me/rainbowkit';
-import { configureChains, createConfig } from 'wagmi';
+import { 
+  getDefaultWallets,
+  RainbowKitProvider 
+} from '@rainbow-me/rainbowkit';
+import { 
+  http, 
+  createConfig, 
+  createStorage 
+} from 'wagmi';
 import { baseGoerli } from 'wagmi/chains';
-import { alchemyProvider } from 'wagmi/providers/alchemy';
-import { publicProvider } from 'wagmi/providers/public';
 
 // Using Base Goerli testnet for development
-const { chains, publicClient } = configureChains(
-  [baseGoerli],
-  [
-    publicProvider()
-  ]
-);
+const projectId = 'YOUR_WALLETCONNECT_PROJECT_ID'; // Replace with actual project ID in production
 
-const { connectors } = getDefaultWallets({
+const { wallets } = getDefaultWallets({
   appName: 'Context News App',
-  projectId: 'YOUR_WALLETCONNECT_PROJECT_ID', // Replace with actual project ID in production
-  chains
+  projectId,
 });
 
 export const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors,
-  publicClient
+  chains: [baseGoerli],
+  transports: {
+    [baseGoerli.id]: http(),
+  },
+  connectors: wallets,
+  storage: createStorage({ storage: window.localStorage }),
 });
 
-export { chains };
+export { RainbowKitProvider };
