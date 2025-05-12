@@ -15,7 +15,7 @@ import { baseGoerli } from 'wagmi/chains';
 // Using Base Goerli testnet for development
 const projectId = 'YOUR_WALLETCONNECT_PROJECT_ID'; // Replace with actual project ID in production
 
-const { wallets } = getDefaultWallets({
+const { connectors } = getDefaultWallets({
   appName: 'Context News App',
   projectId,
 });
@@ -25,7 +25,7 @@ export const wagmiConfig = createConfig({
   transports: {
     [baseGoerli.id]: http(),
   },
-  connectors: wallets,
+  connectors,
   storage: createStorage({ storage: window.localStorage }),
 });
 
