@@ -68,7 +68,7 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
   };
 
   return (
-    <header className="sticky top-0 z-30 w-full neo-glass shadow-subline">
+    <header className="sticky top-0 z-30 w-full bg-black border-b border-gray-800">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center space-x-1">
           <button onClick={() => navigate('/')} className="p-2">
@@ -88,16 +88,16 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search news..."
-                className="w-full py-1.5 pl-3 pr-3 rounded-l-full border border-gray-300 dark:border-gray-600 dark:bg-subline-darkCard/70 text-sm focus:outline-none focus:ring-1 focus:ring-subline-indigo shadow-subline-inset"
+                className="w-full py-1.5 pl-3 pr-3 rounded-l-full border border-gray-600 bg-gray-900 text-sm focus:outline-none focus:ring-1 focus:ring-subline-accent shadow-sm"
               />
               <Button 
                 type="submit" 
                 size="sm"
-                className="rounded-l-none rounded-r-full bg-gradient-indigo-coral hover:opacity-90 shadow-sm"
+                className="rounded-l-none rounded-r-full bg-[#7aff62] text-black hover:bg-[#7aff62]/80 shadow-sm"
                 aria-label="Search"
               >
                 <Search size={16} className="mr-1" />
-                Search
+                <span className="inline-block">Search</span>
               </Button>
             </form>
           )}
@@ -106,16 +106,18 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
         <div className="flex items-center space-x-2">
           {mounted && (
             <Button
-              variant="ghost"
+              variant="outline"
               size="icon"
               onClick={toggleTheme}
-              className="mr-2"
+              className="mr-2 border-gray-600 bg-gray-900 hover:bg-gray-800 hover:border-[#7aff62]"
               aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             >
-              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+              {theme === 'dark' ? <Sun size={18} className="text-[#7aff62]" /> : <Moon size={18} className="text-[#7aff62]" />}
             </Button>
           )}
-          <ConnectButton showBalance={false} />
+          <div className="rainbowkit-connect-button">
+            <ConnectButton showBalance={false} />
+          </div>
         </div>
       </div>
     </header>

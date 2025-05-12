@@ -128,3 +128,41 @@
 button {
   cursor: pointer;
 }
+
+/* RainbowKit button overrides */
+.rainbowkit-connect-button button {
+  background-color: #000000 !important;
+  border: 1px solid #333333 !important;
+}
+
+.rainbowkit-connect-button button:hover {
+  background-color: #111111 !important;
+  border-color: #7aff62 !important;
+}
+
+.rainbowkit-connect-button button > div {
+  color: white !important;
+}
+
+.rainbowkit-connect-button button:hover > div {
+  color: #7aff62 !important;
+}
+
+/* RainbowKit modal fixes */
+[data-rk] [data-rk-overlay] {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+[data-rk] [data-rk-card] {
+  background-color: #0a0a0a !important;
+  border: 1px solid #333 !important;
+  color: white !important;
+}
+
+[data-rk] [data-rk-wallet-option]:hover {
+  background-color: #151515 !important;
+}
+
+[data-rk] [data-rk-wallet-option-name] {
+  color: white !important;
+}
