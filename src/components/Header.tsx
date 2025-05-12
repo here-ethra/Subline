@@ -1,10 +1,11 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Search } from 'lucide-react';
+import { Search, Moon, Sun } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { useAccount } from 'wagmi';
+import { useTheme } from 'next-themes';
 
 interface HeaderProps {
   onSearch?: (query: string) => void;
@@ -13,9 +14,16 @@ interface HeaderProps {
 
 const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
   const [query, setQuery] = useState('');
+  const [mounted, setMounted] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { isConnected } = useAccount();
+  const { theme, setTheme } = useTheme();
+  
+  // After mounted, we can show the theme toggle (to avoid hydration mismatch)
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,18 +63,17 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
     console.log("========================");
   };
 
-  const handleButtonClick = () => {
-    console.log("Header: Search button clicked directly");
-    // The form submission will handle the actual search
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
   return (
-    <header className="sticky top-0 z-30 w-full bg-white/90 dark:bg-context-darkBlue/90 backdrop-blur-sm border-b">
+    <header className="sticky top-0 z-30 w-full neo-glass backdrop-blur">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center space-x-1">
           <button 
             onClick={() => navigate('/')}
-            className="text-xl font-bold text-context-blue"
+            className="text-xl font-bold bg-gradient-to-r from-blue-500 to-indigo-600 bg-clip-text text-transparent"
           >
             Context
           </button>
@@ -80,13 +87,12 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search news..."
-                className="w-full py-1.5 pl-3 pr-3 rounded-l-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-sm focus:outline-none focus:ring-1 focus:ring-context-blue"
+                className="w-full py-1.5 pl-3 pr-3 rounded-l-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800/60 text-sm focus:outline-none focus:ring-1 focus:ring-context-blue"
               />
               <Button 
                 type="submit" 
                 size="sm"
-                className="rounded-l-none rounded-r-full"
-                onClick={handleButtonClick}
+                className="rounded-l-none rounded-r-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700"
                 aria-label="Search"
               >
                 <Search size={16} className="mr-1" />
@@ -96,7 +102,18 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
           )}
         </div>
 
-        <div className="flex items-center">
+        <div className="flex items-center space-x-2">
+          {mounted && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              className="mr-2"
+              aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            </Button>
+          )}
           <ConnectButton showBalance={false} />
         </div>
       </div>

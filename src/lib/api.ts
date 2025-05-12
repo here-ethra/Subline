@@ -1,6 +1,7 @@
+
 import OpenAI from "openai";
 
-// Replace with actual API keys in production
+// News API configuration
 const NEWS_API_KEY = "pub_86219f1b7c2997d6c78e114577f2a543229b5";
 const OPENAI_API_KEY = "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";
 
@@ -12,6 +13,13 @@ const openai = new OpenAI({
   apiKey: OPENAI_API_KEY,
   dangerouslyAllowBrowser: true, // Note: In production, API calls should be made from a backend
 });
+
+// Important topics to include
+const IMPORTANT_CATEGORIES = ['top', 'world', 'politics', 'business', 'technology', 'science', 'health', 'environment'];
+const IMPORTANT_KEYWORDS = ['crypto', 'blockchain', 'safety', 'disaster', 'breakthrough', 'innovation', 'crisis', 'emergency'];
+
+// Categories to exclude
+const EXCLUDED_CATEGORIES = ['entertainment', 'sports', 'lifestyle', 'food', 'travel'];
 
 // News type definition
 export interface NewsArticle {
@@ -26,20 +34,23 @@ export interface NewsArticle {
   id: string;
 }
 
-interface NewsResponse {
-  status: string;
-  totalResults: number;
-  results: any[]; // Using any for the API response as we'll map it to our interface
-  nextPage?: string;
-}
-
-// Context analysis type - updated to match the new output format
+// Enhanced context analysis interface to include more comprehensive information
 export interface ArticleContext {
   summary: string;
   whyItMatters: string;
   timeline: { date: string; event: string }[];
   stakeholders: { name: string; stake: string }[];
-  perspectives: string;
+  perspectives: {
+    mainStakeholders: string;
+    experts: string;
+    publicOpinion: string;
+    critics: string;
+  };
+  globalContext: {
+    similarCase: string;
+    resolution: string;
+    lessons: string;
+  };
   patterns: string;
   changePoints: string;
 }
@@ -61,37 +72,84 @@ function mapNewsDataToArticle(item: any): NewsArticle {
   };
 }
 
+// Check if an article is important based on our criteria
+function isImportantArticle(article: any): boolean {
+  // Check categories
+  if (article.category) {
+    // Exclude entertainment-related categories
+    if (article.category.some((cat: string) => 
+      EXCLUDED_CATEGORIES.some(excluded => 
+        cat.toLowerCase().includes(excluded.toLowerCase())
+      )
+    )) {
+      return false;
+    }
+    
+    // Include if it matches our important categories
+    if (article.category.some((cat: string) => 
+      IMPORTANT_CATEGORIES.some(important => 
+        cat.toLowerCase().includes(important.toLowerCase())
+      )
+    )) {
+      return true;
+    }
+  }
+  
+  // Check keywords in title or description
+  const textToCheck = `${article.title || ""} ${article.description || ""}`.toLowerCase();
+  if (IMPORTANT_KEYWORDS.some(keyword => textToCheck.includes(keyword.toLowerCase()))) {
+    return true;
+  }
+  
+  return false;
+}
+
 // Fetch news from NewsData.io API
 export async function fetchTopHeadlines(country = 'in'): Promise<NewsArticle[]> {
   try {
     console.log("API: fetchTopHeadlines called for country:", country);
     
+    // Add a random parameter to prevent caching issues
+    const cacheBuster = Date.now();
+    
     const endpoint = `${NEWS_API_BASE_URL}/news`;
     const params = new URLSearchParams({
       apikey: NEWS_API_KEY,
       country: country,
-      language: 'en'
+      language: 'en',
+      _cb: cacheBuster.toString()
     });
     
     console.log(`API: Calling NewsData.io endpoint: ${endpoint}?${params.toString()}`);
     
-    const response = await fetch(`${endpoint}?${params.toString()}`);
+    const response = await fetch(`${endpoint}?${params.toString()}`, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
     
     if (!response.ok) {
-      console.error("API: NewsData.io API error:", response.status, response.statusText);
+      const errorText = await response.text();
+      console.error("API: NewsData.io API error:", response.status, response.statusText, errorText);
       throw new Error(`NewsData.io API error: ${response.status} ${response.statusText}`);
     }
     
     const data = await response.json();
     console.log("API: NewsData.io response status:", data.status);
-    console.log("API: Total results:", data.totalResults);
+    console.log("API: Total results:", data.totalResults || 0);
     
     if (data.status !== "success" || !data.results) {
       console.error("API: Unexpected response format:", data);
       throw new Error("Unexpected response format from NewsData.io API");
     }
     
-    const articles = data.results.map(mapNewsDataToArticle);
+    // Filter to important articles only
+    const importantArticles = data.results.filter(isImportantArticle);
+    console.log("API: Important articles found:", importantArticles.length, "out of", data.results.length);
+    
+    const articles = importantArticles.map(mapNewsDataToArticle);
     console.log("API: Processed articles:", articles.length);
     
     return articles;
@@ -117,20 +175,31 @@ export async function searchNews(query: string, country = 'in'): Promise<NewsArt
     const trimmedQuery = query.trim();
     console.log("API: Trimmed query:", trimmedQuery);
     
+    // Add a random parameter to prevent caching issues
+    const cacheBuster = Date.now();
+    
     const endpoint = `${NEWS_API_BASE_URL}/news`;
     const params = new URLSearchParams({
       apikey: NEWS_API_KEY,
       q: trimmedQuery,
       country: country,
-      language: 'en'
+      language: 'en',
+      _cb: cacheBuster.toString()
     });
     
     console.log(`API: Calling NewsData.io search endpoint: ${endpoint}?${params.toString()}`);
     
-    const response = await fetch(`${endpoint}?${params.toString()}`);
+    const response = await fetch(`${endpoint}?${params.toString()}`, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
     
     if (!response.ok) {
-      console.error("API: NewsData.io search API error:", response.status, response.statusText);
+      const errorText = await response.text();
+      console.error("API: NewsData.io search API error:", response.status, response.statusText, errorText);
       throw new Error(`NewsData.io API error: ${response.status} ${response.statusText}`);
     }
     
@@ -149,7 +218,11 @@ export async function searchNews(query: string, country = 'in'): Promise<NewsArt
       return [];
     }
     
-    const searchResults = data.results.map(mapNewsDataToArticle);
+    // Filter to important articles for search results as well
+    const importantArticles = data.results.filter(isImportantArticle);
+    console.log("API: Important search results found:", importantArticles.length, "out of", data.results.length);
+    
+    const searchResults = importantArticles.map(mapNewsDataToArticle);
     console.log("API: Processed search results:", searchResults.length);
     console.log("API: First search result title:", searchResults[0]?.title);
     console.log("========================");
@@ -157,7 +230,6 @@ export async function searchNews(query: string, country = 'in'): Promise<NewsArt
     return searchResults;
   } catch (error) {
     console.error('Error searching news:', error);
-    // Return empty array instead of throwing to avoid breaking the UI
     console.log("API: Returning empty array due to error");
     console.log("========================");
     return [];
@@ -188,36 +260,38 @@ export async function generateArticleContext(article: NewsArticle): Promise<Arti
             role: "system",
             content: `You are a systems thinker and a journalist.
 
-Given a news headline or short summary, break it down into a clear, structured explanation that helps a regular person understand the full context.
+Given a news headline or article, break it down into a clear, structured explanation that helps a regular person understand the full context.
 
 Avoid jargon. Instead of using systems thinking terms like "leverage points," explain them in everyday language — e.g., "places where small changes could make a big difference".
 
-Structure your analysis using exactly these headings and emoji:
-
-🧵 Summary
-🔥 Why This Matters
-📜 How We Got Here (Timeline)
-💸 Who Benefits or Loses
-🔍 Different Perspectives
-🔁 Patterns + Loops
-🛠️ Where Change Can Happen
+Structure your analysis with enhanced depth, providing balanced perspectives from all stakeholders:
 
 Respond in JSON format with these exact fields:
 {
-  "summary": "A clear and short explanation of the story.",
-  "whyItMatters": "What's at stake? Why should people care about this?",
+  "summary": "A clear and concise explanation of the story",
+  "whyItMatters": "A detailed explanation of why people should care about this and who is affected",
   "timeline": [
-    {"date": "Year or period", "event": "Description of key event"}
+    {"date": "Year or specific period", "event": "Detailed description of key event with context"}
   ],
   "stakeholders": [
-    {"name": "Group or person name", "stake": "How they're affected"}
+    {"name": "Group or person name", "stake": "Detailed explanation of how they're affected or their role in the situation"}
   ],
-  "perspectives": "What are opposing views, and why do people see this differently?",
-  "patterns": "Describe any repeating cycles that keep the situation going.",
-  "changePoints": "1-3 places where small shifts could make meaningful impact."
+  "perspectives": {
+    "mainStakeholders": "Detailed views of the primary parties involved",
+    "experts": "Analysis from specialists and academics in this field",
+    "publicOpinion": "How the general public views this issue",
+    "critics": "Opposing viewpoints with their main arguments"
+  },
+  "globalContext": {
+    "similarCase": "An example of a similar situation from around the world",
+    "resolution": "How that case was handled or resolved",
+    "lessons": "What can be learned from comparing these situations"
+  },
+  "patterns": "An analysis of recurring patterns or cycles in this situation",
+  "changePoints": "3-5 specific areas where meaningful change could happen, with brief explanations"
 }
 
-Keep your response concise but informative.`
+Keep your response structured but comprehensive.`
           },
           {
             role: "user",
@@ -225,7 +299,7 @@ Keep your response concise but informative.`
           }
         ],
         temperature: 0.7,
-        max_tokens: 1000,
+        max_tokens: 1500,
         response_format: { type: "json_object" } // Force JSON response
       });
       
@@ -238,20 +312,33 @@ Keep your response concise but informative.`
         let contextData: ArticleContext;
         
         try {
-          contextData = JSON.parse(responseText);
+          const parsedResponse = JSON.parse(responseText);
+          
+          // Ensure the response matches our enhanced interface
+          contextData = {
+            summary: parsedResponse.summary,
+            whyItMatters: parsedResponse.whyItMatters,
+            timeline: parsedResponse.timeline || [],
+            stakeholders: parsedResponse.stakeholders || [],
+            perspectives: {
+              mainStakeholders: parsedResponse.perspectives?.mainStakeholders || "",
+              experts: parsedResponse.perspectives?.experts || "",
+              publicOpinion: parsedResponse.perspectives?.publicOpinion || "",
+              critics: parsedResponse.perspectives?.critics || ""
+            },
+            globalContext: {
+              similarCase: parsedResponse.globalContext?.similarCase || "",
+              resolution: parsedResponse.globalContext?.resolution || "",
+              lessons: parsedResponse.globalContext?.lessons || ""
+            },
+            patterns: parsedResponse.patterns || "",
+            changePoints: parsedResponse.changePoints || ""
+          };
+          
           console.log("Successfully parsed OpenAI response as JSON");
         } catch (parseError) {
           console.error("Failed to parse OpenAI response:", parseError);
           throw new Error("Could not parse context data");
-        }
-        
-        // Validate the structure matches our interface
-        if (!contextData.summary || !contextData.whyItMatters || 
-            !contextData.timeline || !contextData.stakeholders ||
-            !contextData.perspectives || !contextData.patterns ||
-            !contextData.changePoints) {
-          console.error("Invalid context data structure:", contextData);
-          throw new Error("Incomplete context data from OpenAI");
         }
         
         return contextData;
@@ -289,21 +376,33 @@ function generateMockContext(article: NewsArticle): ArticleContext {
     stakeholders: [
       { name: "Government Agencies", stake: "Responsible for regulation and oversight in this area" },
       { name: "Industry Leaders", stake: "Financial interests and market position affected by these developments" },
-      { name: "General Public", stake: "Daily life and future opportunities impacted by these changes" }
+      { name: "General Public", stake: "Daily life and future opportunities impacted by these changes" },
+      { name: "Vulnerable Communities", stake: "Disproportionately affected by these changes with fewer resources to adapt" }
     ],
     
-    perspectives: `Some see this as a positive development that will drive innovation and growth, while others are concerned about potential negative consequences for certain communities or long-term sustainability.`,
+    perspectives: {
+      mainStakeholders: "Primary stakeholders have conflicting views about these developments. Some see opportunities for growth while others express concerns about implementation challenges.",
+      experts: "Policy experts and researchers emphasize the need for evidence-based approaches and point to historical precedents that might inform current decisions.",
+      publicOpinion: "Public sentiment is divided, with polls showing approximately 45% in favor, 35% opposed, and 20% undecided about the developments described in this article.",
+      critics: "Critics argue that the approach fails to address underlying systemic issues and may exacerbate existing inequalities without proper safeguards."
+    },
+    
+    globalContext: {
+      similarCase: "In 2023, a similar situation emerged in South Korea, where authorities implemented comparable measures to address related challenges.",
+      resolution: "The South Korean approach included stronger regulatory oversight and public-private partnerships, which ultimately resulted in a more stable outcome.",
+      lessons: "Key lessons include the importance of transparent communication, inclusive stakeholder engagement, and adaptive management frameworks that can evolve as new information emerges."
+    },
     
     patterns: `This situation follows a familiar pattern where initial policy changes lead to market adaptations, which then trigger further regulatory responses, creating a cycle of adjustment and readjustment.`,
     
-    changePoints: `Three areas where meaningful change could happen: 1) More inclusive stakeholder participation in decision-making; 2) Better data collection and transparency about impacts; 3) Alignment of short-term incentives with long-term goals.`
+    changePoints: `Three areas where meaningful change could happen: 1) More inclusive stakeholder participation in decision-making processes; 2) Better data collection and transparency about impacts across different demographic groups; 3) Alignment of short-term incentives with long-term sustainability goals; 4) Investment in capacity building for implementing organizations; 5) Regular independent reviews of outcomes against stated objectives.`
   };
 
   // Customize the mock response based on article content
   if (article.category?.includes('technology')) {
-    mockContext.stakeholders.push({ name: "Tech Companies", stake: "Driving innovation while managing competitive pressures" });
+    mockContext.stakeholders.push({ name: "Tech Companies", stake: "Driving innovation while managing competitive pressures and regulatory compliance" });
   } else if (article.category?.includes('politics')) {
-    mockContext.stakeholders.push({ name: "Political Parties", stake: "Competing visions for policy direction and public support" });
+    mockContext.stakeholders.push({ name: "Political Parties", stake: "Competing visions for policy direction and public support with electoral implications" });
   }
 
   return mockContext;
