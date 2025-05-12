@@ -119,11 +119,17 @@ export async function searchNews(query: string, country = 'in'): Promise<NewsArt
       return [];
     }
     
+    const trimmedQuery = query.trim();
+    console.log("API: Trimmed query:", trimmedQuery);
+    
+    // Enhanced logging for search process
+    console.log("API: Generating search results for:", trimmedQuery);
+    
     // Mock search results based on query
     const mockResults: NewsArticle[] = [
       {
-        title: `${query} - Latest Developments`,
-        description: `Recent developments related to "${query}" show significant impact across multiple sectors.`,
+        title: `${trimmedQuery} - Latest Developments`,
+        description: `Recent developments related to "${trimmedQuery}" show significant impact across multiple sectors.`,
         source: "Search News",
         url: "https://example.com/search",
         image_url: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d",
@@ -131,8 +137,8 @@ export async function searchNews(query: string, country = 'in'): Promise<NewsArt
         id: `search-${Date.now()}-1`
       },
       {
-        title: `${query} - Analysis and Insights`,
-        description: `Experts provide analysis on how "${query}" is influencing market trends and future prospects.`,
+        title: `${trimmedQuery} - Analysis and Insights`,
+        description: `Experts provide analysis on how "${trimmedQuery}" is influencing market trends and future prospects.`,
         source: "Topic Analysis",
         url: "https://example.com/topic-analysis",
         image_url: "https://images.unsplash.com/photo-1569060368216-3b9ee6d1a5d2",
@@ -140,8 +146,8 @@ export async function searchNews(query: string, country = 'in'): Promise<NewsArt
         id: `search-${Date.now()}-2`
       },
       {
-        title: `The Impact of ${query} on Global Markets`,
-        description: `How "${query}" is reshaping global markets and creating new opportunities for businesses.`,
+        title: `The Impact of ${trimmedQuery} on Global Markets`,
+        description: `How "${trimmedQuery}" is reshaping global markets and creating new opportunities for businesses.`,
         source: "Global Trends",
         url: "https://example.com/global-trends",
         image_url: "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144",
@@ -154,6 +160,8 @@ export async function searchNews(query: string, country = 'in'): Promise<NewsArt
     return mockResults;
   } catch (error) {
     console.error('Error searching news:', error);
+    // Return empty array instead of throwing to avoid breaking the UI
+    console.log("API: Returning empty array due to error");
     return [];
   }
 }

@@ -17,38 +17,38 @@ import WalletRequired from "./components/WalletRequired";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/welcome" element={<WelcomePage />} />
-              <Route path="/" element={
-                <WalletRequired>
-                  <HomePage />
-                </WalletRequired>
-              } />
-              <Route path="/article/:id" element={
-                <WalletRequired>
-                  <ArticlePage />
-                </WalletRequired>
-              } />
-              <Route path="/search" element={
-                <WalletRequired>
-                  <SearchPage />
-                </WalletRequired>
-              } />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </RainbowKitProvider>
-    </WagmiConfig>
-  </QueryClientProvider>
-);
+const App = () => {
+  console.log("App rendering with routes");
+  
+  return (
+    <QueryClientProvider client={queryClient}>
+      <WagmiConfig config={wagmiConfig}>
+        <RainbowKitProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/welcome" element={<WelcomePage />} />
+                <Route path="/search" element={<SearchPage />} />
+                <Route path="/" element={
+                  <WalletRequired>
+                    <HomePage />
+                  </WalletRequired>
+                } />
+                <Route path="/article/:id" element={
+                  <WalletRequired>
+                    <ArticlePage />
+                  </WalletRequired>
+                } />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </RainbowKitProvider>
+      </WagmiConfig>
+    </QueryClientProvider>
+  );
+};
 
 export default App;

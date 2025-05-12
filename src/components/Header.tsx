@@ -25,16 +25,22 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
         onSearch(query);
       } else {
         console.log("Navigating to search page with query:", query);
-        const searchPath = `/search?q=${encodeURIComponent(query.trim())}`;
+        const trimmedQuery = query.trim();
+        const searchPath = `/search?q=${encodeURIComponent(trimmedQuery)}`;
         console.log("Search path:", searchPath);
         
         // Check if we're already on the search page
         if (location.pathname === '/search') {
+          console.log("Already on search page, using replace to update query");
           // Use replace to avoid adding to history stack
           navigate(searchPath, { replace: true });
         } else {
+          console.log("Navigating to search page");
           navigate(searchPath);
         }
+        
+        // Log after navigation attempt to verify it was called
+        console.log("Navigation function called");
       }
     } else {
       console.log("Empty query, search not performed");

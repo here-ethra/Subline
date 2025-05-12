@@ -15,16 +15,24 @@ const SearchPage = () => {
   const query = searchParams.get('q') || '';
   const [results, setResults] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchPerformed, setSearchPerformed] = useState(false);
   const { toast } = useToast();
   
   useEffect(() => {
+    console.log("SearchPage: Initial render with query:", query);
+    
+    // Handle empty query with more detailed logging
     if (!query || query.trim() === '') {
-      console.log("SearchPage: No query found, redirecting to home");
-      navigate('/');
-      return;
+      console.log("SearchPage: Empty query detected");
+      // Only redirect if no search has been performed yet
+      if (!searchPerformed) {
+        console.log("SearchPage: No search performed yet, redirect skipped");
+        setLoading(false);
+        return;
+      }
     }
     
-    console.log("SearchPage: Searching for:", query);
+    console.log("SearchPage: Performing search for:", query);
     
     const performSearch = async () => {
       setLoading(true);
@@ -38,6 +46,7 @@ const SearchPage = () => {
         }
         
         setResults(searchResults);
+        setSearchPerformed(true);
       } catch (error) {
         console.error('SearchPage: Search failed:', error);
         toast({
@@ -51,7 +60,7 @@ const SearchPage = () => {
     };
     
     performSearch();
-  }, [query, navigate, toast]);
+  }, [query, toast]);
   
   const handleSearch = (newQuery: string) => {
     console.log("SearchPage: New search handler called with query:", newQuery);
@@ -77,7 +86,7 @@ const SearchPage = () => {
         </Button>
         
         <h1 className="text-2xl font-bold mb-6">
-          Search Results for "{query}"
+          {query ? `Search Results for "${query}"` : 'Search News'}
         </h1>
         
         {loading ? (
@@ -101,7 +110,9 @@ const SearchPage = () => {
               ))
             ) : (
               <div className="col-span-full text-center py-10">
-                <p className="text-gray-500">No results found for "{query}"</p>
+                <p className="text-gray-500">
+                  {query ? `No results found for "${query}"` : 'Enter a search term to find news'}
+                </p>
                 <Button 
                   variant="outline" 
                   className="mt-4"

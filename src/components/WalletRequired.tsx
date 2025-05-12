@@ -1,6 +1,6 @@
 
 import { useAccount } from 'wagmi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
@@ -11,13 +11,24 @@ interface WalletRequiredProps {
 const WalletRequired = ({ children }: WalletRequiredProps) => {
   const { isConnected } = useAccount();
   const navigate = useNavigate();
+  const location = useLocation();
   
   useEffect(() => {
+    // Add debug logs to track the connection status and current path
+    console.log("WalletRequired: Connection status:", isConnected);
+    console.log("WalletRequired: Current path:", location.pathname);
+    console.log("WalletRequired: Current search:", location.search);
+    
+    // Allow search page to work even when not connected
+    const isSearchPage = location.pathname === '/search' && location.search.includes('q=');
+    
     // Check if the user is not on the welcome page and is not connected
-    if (!isConnected && window.location.pathname !== '/welcome') {
+    if (!isConnected && location.pathname !== '/welcome' && !isSearchPage) {
+      console.log("WalletRequired: Redirecting to welcome page");
+      // Preserve the current URL as a return destination
       navigate('/welcome');
     }
-  }, [isConnected, navigate]);
+  }, [isConnected, navigate, location]);
 
   if (!isConnected) {
     return (
