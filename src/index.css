@@ -7,65 +7,35 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 246 84% 56%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 0 78% 70%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 1rem;
-  }
-
-  .dark {
-    --background: 0 0% 4%;
+    --background: 0 0% 0%;
     --foreground: 0 0% 98%;
 
-    --card: 0 0% 8%;
+    --card: 0 0% 0%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 6%;
+    --popover: 0 0% 0%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 246 84% 56%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 142 100% 69%;
+    --primary-foreground: 0 0% 0%;
 
-    --secondary: 0 78% 70%;
+    --secondary: 0 0% 9%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 0 0% 12%;
+    --muted: 0 0% 9%;
     --muted-foreground: 240 5% 64.9%;
 
-    --accent: 0 0% 12%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 142 100% 69%;
+    --accent-foreground: 0 0% 0%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 12%;
-    --input: 0 0% 12%;
-    --ring: 240 4.9% 83.9%;
+    --border: 0 0% 9%;
+    --input: 0 0% 9%;
+    --ring: 142 100% 69%;
+
+    --radius: 0.5rem;
   }
 
   * {
@@ -73,37 +43,26 @@
   }
 
   body {
-    @apply bg-background text-foreground dark:bg-subline-darkBg;
+    @apply bg-black text-foreground;
     font-family: 'Inter', sans-serif;
     -webkit-tap-highlight-color: transparent;
   }
 }
 
 @layer utilities {
-  .glass-card {
-    @apply backdrop-blur-sm bg-white/40 dark:bg-gray-900/30 border border-gray-200/80 dark:border-gray-700/30;
-    box-shadow: 0 4px 16px -1px rgba(0, 0, 0, 0.1), 0 2px 8px -1px rgba(0, 0, 0, 0.06);
-  }
-  
-  .neo-glass {
-    @apply backdrop-blur-md bg-white/80 dark:bg-subline-darkCard/80 border border-gray-200/50 dark:border-gray-800/30;
-    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1), 0 4px 10px -5px rgba(0, 0, 0, 0.04);
-  }
-  
   .subline-card {
-    @apply rounded-xl overflow-hidden bg-gradient-card;
-    box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.15), 0 4px 10px -4px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    @apply rounded-md overflow-hidden bg-black;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
   }
   
   .subline-card:hover {
-    box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.2), 0 4px 10px -4px rgba(0, 0, 0, 0.15);
-    transform: translateY(-3px);
+    box-shadow: 0 2px 8px rgba(122, 255, 98, 0.2);
   }
   
   .animate-in {
-    animation-duration: 0.5s;
-    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    animation-duration: 0.3s;
+    animation-timing-function: ease-out;
     animation-fill-mode: both;
   }
   
@@ -115,31 +74,15 @@
     animation-name: slideInFromBottom;
   }
   
-  .shine-gradient {
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .shine-gradient::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    animation: shine 3s infinite;
-  }
-
-  .text-gradient {
-    @apply bg-gradient-indigo-coral bg-clip-text text-transparent;
+  .accent-text {
+    @apply text-[#7aff62];
   }
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 3px;
+  height: 3px;
 }
 
 ::-webkit-scrollbar-track {
@@ -147,12 +90,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-400/30 dark:bg-gray-700/50;
+  @apply bg-gray-800;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-400/50 dark:bg-gray-600/70;
+  @apply bg-[#7aff62]/50;
 }
 
 @keyframes fadeIn {
@@ -175,29 +118,13 @@
   }
 }
 
-@keyframes shine {
-  0% {
-    left: -100%;
-  }
-  20%, 100% {
-    left: 100%;
-  }
+/* Button style overrides */
+.btn-accent {
+  @apply bg-[#7aff62] text-black hover:bg-[#7aff62]/90 transition-all duration-200;
 }
 
-/* Noise texture effect for background */
-.noise-bg {
-  position: relative;
-}
-
-.noise-bg::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
-  pointer-events: none;
-  opacity: 0.3;
-  z-index: 0;
+/* Fix for react error with object types */
+[role="button"],
+button {
+  cursor: pointer;
 }

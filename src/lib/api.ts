@@ -1,3 +1,4 @@
+
 import OpenAI from "openai";
 
 // News API configuration
@@ -19,6 +20,9 @@ const IMPORTANT_KEYWORDS = ['crypto', 'blockchain', 'safety', 'disaster', 'break
 
 // Categories to exclude
 const EXCLUDED_CATEGORIES = ['entertainment', 'sports', 'lifestyle', 'food', 'travel'];
+
+// Violence-related terms to filter out individual violence stories
+const VIOLENCE_KEYWORDS = ['murder', 'stabbing', 'shooting', 'killed', 'assault', 'homicide', 'robbery'];
 
 // News type definition
 export interface NewsArticle {
@@ -96,6 +100,20 @@ function isImportantArticle(article: any): boolean {
   
   // Check keywords in title or description
   const textToCheck = `${article.title || ""} ${article.description || ""}`.toLowerCase();
+  
+  // Filter out individual violence stories
+  if (VIOLENCE_KEYWORDS.some(keyword => textToCheck.includes(keyword.toLowerCase()))) {
+    // Only exclude if it seems like an isolated incident (not systemic/widespread)
+    if (!textToCheck.includes('policy') && 
+        !textToCheck.includes('government') && 
+        !textToCheck.includes('nationwide') && 
+        !textToCheck.includes('systemic') && 
+        !textToCheck.includes('crisis')) {
+      return false;
+    }
+  }
+  
+  // Check for important keywords
   if (IMPORTANT_KEYWORDS.some(keyword => textToCheck.includes(keyword.toLowerCase()))) {
     return true;
   }
@@ -119,7 +137,6 @@ export async function fetchTopHeadlines(country = 'in'): Promise<NewsArticle[]> 
     
     const response = await fetch(`${endpoint}?${params.toString()}`, {
       headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
         'Pragma': 'no-cache',
         'Expires': '0'
       }
@@ -182,7 +199,6 @@ export async function searchNews(query: string, country = 'in'): Promise<NewsArt
     
     const response = await fetch(`${endpoint}?${params.toString()}`, {
       headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
         'Pragma': 'no-cache',
         'Expires': '0'
       }

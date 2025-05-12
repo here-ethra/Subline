@@ -70,7 +70,7 @@ const SearchPage = () => {
     
     performSearch();
     console.log("========================");
-  }, [query, toast, searchPerformed]);
+  }, [query, toast, isConnected]);
   
   const handleSearch = (newQuery: string) => {
     console.log("SearchPage: New search handler called with query:", newQuery);
@@ -82,14 +82,14 @@ const SearchPage = () => {
   };
   
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-black">
       <Header onSearch={handleSearch} />
       
       <main className="container mx-auto px-4 py-6">
         <Button
           variant="ghost"
           size="sm"
-          className="mb-4"
+          className="mb-4 hover:text-[#7aff62]"
           onClick={() => {
             console.log("SearchPage: Back to Headlines button clicked");
             navigate('/');
@@ -105,12 +105,11 @@ const SearchPage = () => {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="border rounded-lg overflow-hidden">
-                <Skeleton className="h-48 w-full" />
+              <div key={i} className="border border-gray-800 rounded-lg overflow-hidden bg-black">
                 <div className="p-4">
-                  <Skeleton className="h-6 w-3/4 mb-2" />
-                  <Skeleton className="h-4 w-1/2 mb-4" />
-                  <Skeleton className="h-16 w-full" />
+                  <Skeleton className="h-6 w-3/4 mb-2 bg-gray-800/50" />
+                  <Skeleton className="h-4 w-1/2 mb-4 bg-gray-800/50" />
+                  <Skeleton className="h-16 w-full bg-gray-800/50" />
                 </div>
               </div>
             ))}
@@ -123,12 +122,12 @@ const SearchPage = () => {
               ))
             ) : (
               <div className="col-span-full text-center py-10">
-                <p className="text-gray-500">
+                <p className="text-gray-400">
                   {query ? `No results found for "${query}"` : 'Enter a search term to find news'}
                 </p>
                 <Button 
                   variant="outline" 
-                  className="mt-4"
+                  className="mt-4 hover:text-[#7aff62] hover:border-[#7aff62]/50"
                   onClick={() => {
                     console.log("SearchPage: Return to Headlines button clicked");
                     navigate('/');

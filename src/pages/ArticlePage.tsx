@@ -6,7 +6,7 @@ import Header from '@/components/Header';
 import ContextSection from '@/components/ContextSection';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, ExternalLink } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Tag } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 
@@ -65,7 +65,7 @@ const ArticlePage = () => {
   
   if (!article) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-black">
         <Header showSearch={false} />
         <div className="container mx-auto px-4 py-10 text-center">
           <p>Article not found</p>
@@ -86,39 +86,40 @@ const ArticlePage = () => {
     'Recently';
     
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-black">
       <Header showSearch={false} />
       
       <main className="container mx-auto px-4 py-6">
         <Button
           variant="ghost"
           size="sm"
-          className="mb-4"
+          className="mb-4 hover:text-[#7aff62]"
           onClick={() => navigate(-1)}
         >
           <ArrowLeft size={16} className="mr-1" /> Back
         </Button>
         
         <article className="max-w-2xl mx-auto">
-          {article.image_url && (
-            <div className="relative w-full h-64 md:h-80 overflow-hidden rounded-lg mb-6">
-              <img 
-                src={article.image_url} 
-                alt={article.title} 
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?ixlib=rb-4.0.3';
-                }}
-              />
-            </div>
-          )}
-          
           <h1 className="text-2xl md:text-3xl font-bold mb-3">{article.title}</h1>
           
-          <div className="flex justify-between text-sm text-gray-500 mb-6">
+          <div className="flex justify-between text-sm text-gray-400 mb-4">
             <span>{article.source}</span>
             <span>{formattedDate}</span>
           </div>
+
+          {article.category && article.category.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-6">
+              {article.category.map((cat, index) => (
+                <span 
+                  key={index} 
+                  className="inline-flex items-center px-2 py-1 text-xs rounded bg-black border border-[#7aff62]/30 text-[#7aff62]"
+                >
+                  <Tag size={12} className="mr-1" />
+                  {cat}
+                </span>
+              ))}
+            </div>
+          )}
           
           <p className="text-lg mb-6">{article.description}</p>
           
@@ -132,14 +133,14 @@ const ArticlePage = () => {
             <Button 
               variant="outline" 
               size="sm"
-              className="flex items-center"
+              className="flex items-center hover:text-[#7aff62] hover:border-[#7aff62]/50"
               onClick={() => window.open(article.url, '_blank')}
             >
               Read original article <ExternalLink size={14} className="ml-2" />
             </Button>
           </div>
           
-          <div className="border-t pt-8">
+          <div className="border-t border-gray-800 pt-8">
             <h2 className="text-2xl font-bold mb-6">Context</h2>
             
             {loading ? (
