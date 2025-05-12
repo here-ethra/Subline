@@ -1,8 +1,14 @@
-
 import OpenAI from "openai";
 
 // Replace with actual API keys in production
 const NEWS_API_KEY = "YOUR_NEWS_API_KEY"; 
+const OPENAI_API_KEY = "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";
+
+// Initialize OpenAI client
+const openai = new OpenAI({
+  apiKey: OPENAI_API_KEY,
+  dangerouslyAllowBrowser: true, // Note: In production, API calls should be made from a backend
+});
 
 // News type definition
 export interface NewsArticle {
@@ -145,48 +151,119 @@ export async function searchNews(query: string, country = 'in'): Promise<NewsArt
 
 export async function generateArticleContext(article: NewsArticle): Promise<ArticleContext> {
   try {
-    // In production, this would call an AI service like OpenAI
-    // For demo purposes, generating mock context
+    // Prepare the content for OpenAI
+    const content = `
+      Title: ${article.title}
+      Description: ${article.description}
+      Source: ${article.source}
+      Published: ${article.published_at}
+      ${article.content ? `Content: ${article.content}` : ''}
+      ${article.category ? `Categories: ${article.category.join(', ')}` : ''}
+    `;
+
+    // Call OpenAI to generate context
+    console.log("Generating context for article:", article.title);
     
-    // Mock context generation based on article title and content
-    const mockContext: ArticleContext = {
-      summary: `This is an AI-generated summary of the article about ${article.title}. The article discusses key developments in this area and their potential implications.`,
+    try {
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o-mini", // Using a cost-effective model
+        messages: [
+          {
+            role: "system",
+            content: "You are a helpful assistant that provides context for news articles. Generate a comprehensive context including summary, timeline, stakeholders, background, and systems perspective."
+          },
+          {
+            role: "user",
+            content: `Analyze this news article and provide context in JSON format with the following structure:
+            {
+              "summary": "Brief summary of the article",
+              "timeline": [
+                {"date": "YYYY-MM", "event": "Description of relevant event"},
+                ...
+              ],
+              "stakeholders": [
+                {"name": "Stakeholder name", "role": "Stakeholder's role in this context"},
+                ...
+              ],
+              "background": "Background information relevant to understanding this news",
+              "systemsPerspective": "Analysis from a systems thinking perspective"
+            }
+            
+            News article:
+            ${content}`
+          }
+        ]
+      });
       
-      timeline: [
-        { date: "January 2025", event: "Initial developments related to this topic" },
-        { date: "March 2025", event: "Key milestone that preceded this news" },
-        { date: "May 2025", event: "The current event as reported in the article" }
-      ],
+      console.log("OpenAI response received:", completion.choices[0].message);
       
-      stakeholders: [
-        { name: "Government Agencies", role: "Regulatory oversight and policy implementation" },
-        { name: "Industry Leaders", role: "Market participants affected by these developments" },
-        { name: "General Public", role: "End users or beneficiaries of the reported changes" }
-      ],
+      // Parse the response
+      let contextData: ArticleContext;
+      try {
+        const responseText = completion.choices[0].message.content || "";
+        // Extract JSON from the response (it might be wrapped in markdown code blocks)
+        const jsonMatch = responseText.match(/```json\n([\s\S]*)\n```/) || 
+                         responseText.match(/```\n([\s\S]*)\n```/) || 
+                         [null, responseText];
+        
+        const jsonStr = jsonMatch[1] || responseText;
+        contextData = JSON.parse(jsonStr);
+        
+        // Ensure the response has the expected structure
+        if (!contextData.summary || !contextData.timeline || !contextData.stakeholders || 
+            !contextData.background || !contextData.systemsPerspective) {
+          throw new Error("Incomplete context data from OpenAI");
+        }
+      } catch (parseError) {
+        console.error("Failed to parse OpenAI response:", parseError);
+        throw new Error("Could not parse context data");
+      }
       
-      background: `This is background information that explains the historical context and important factors leading up to the current news. It provides readers with essential knowledge to understand why this news matters.`,
-      
-      systemsPerspective: `From a systems thinking perspective, this news represents an important shift in how various elements interact. There are several feedback loops at play, including how regulatory changes affect market behavior, which in turn influences future policy decisions. The root causes of these developments can be traced to economic pressures, technological advancements, and shifting social priorities.`
-    };
-
-    // Customize the mock response based on article content
-    if (article.category?.includes('technology')) {
-      mockContext.stakeholders.push({ name: "Tech Companies", role: "Primary innovators and implementers" });
-    } else if (article.category?.includes('politics')) {
-      mockContext.stakeholders.push({ name: "Political Parties", role: "Policy advocates and decision makers" });
+      return contextData;
+    } catch (openaiError) {
+      console.error("OpenAI API error:", openaiError);
+      // Fallback to mock data
+      return generateMockContext(article);
     }
-
-    return mockContext;
   } catch (error) {
     console.error('Error generating article context:', error);
-    return {
-      summary: "Unable to generate context at this time.",
-      timeline: [],
-      stakeholders: [],
-      background: "Context information unavailable.",
-      systemsPerspective: "Systems perspective analysis unavailable."
-    };
+    return generateMockContext(article);
   }
+}
+
+// Generate mock context if OpenAI call fails
+function generateMockContext(article: NewsArticle): ArticleContext {
+  console.log("Using mock context for:", article.title);
+  
+  // Mock context generation based on article title and content
+  const mockContext: ArticleContext = {
+    summary: `This is a summary of the article about ${article.title}. The article discusses key developments in this area and their potential implications.`,
+    
+    timeline: [
+      { date: "January 2025", event: "Initial developments related to this topic" },
+      { date: "March 2025", event: "Key milestone that preceded this news" },
+      { date: "May 2025", event: "The current event as reported in the article" }
+    ],
+    
+    stakeholders: [
+      { name: "Government Agencies", role: "Regulatory oversight and policy implementation" },
+      { name: "Industry Leaders", role: "Market participants affected by these developments" },
+      { name: "General Public", role: "End users or beneficiaries of the reported changes" }
+    ],
+    
+    background: `This is background information that explains the historical context and important factors leading up to the current news. It provides readers with essential knowledge to understand why this news matters.`,
+    
+    systemsPerspective: `From a systems thinking perspective, this news represents an important shift in how various elements interact. There are several feedback loops at play, including how regulatory changes affect market behavior, which in turn influences future policy decisions. The root causes of these developments can be traced to economic pressures, technological advancements, and shifting social priorities.`
+  };
+
+  // Customize the mock response based on article content
+  if (article.category?.includes('technology')) {
+    mockContext.stakeholders.push({ name: "Tech Companies", role: "Primary innovators and implementers" });
+  } else if (article.category?.includes('politics')) {
+    mockContext.stakeholders.push({ name: "Political Parties", role: "Policy advocates and decision makers" });
+  }
+
+  return mockContext;
 }
 
 // Detect user's country based on IP (mock implementation)
