@@ -4,6 +4,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Search } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
+import { useAccount } from 'wagmi';
 
 interface HeaderProps {
   onSearch?: (query: string) => void;
@@ -14,37 +15,49 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
+  const { isConnected } = useAccount();
   
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Header search triggered with query:", query);
+    console.log("===== SEARCH DEBUG =====");
+    console.log("Header: Search form submitted");
+    console.log("Header: Current query:", query);
+    console.log("Header: Wallet connected:", isConnected);
+    console.log("Header: Current location:", location.pathname);
     
     if (query.trim()) {
+      console.log("Header: Valid search query detected");
       if (onSearch) {
-        console.log("Using provided onSearch handler");
+        console.log("Header: Using provided onSearch handler");
         onSearch(query);
       } else {
-        console.log("Navigating to search page with query:", query);
+        console.log("Header: Navigating to search page with query:", query);
         const trimmedQuery = query.trim();
         const searchPath = `/search?q=${encodeURIComponent(trimmedQuery)}`;
-        console.log("Search path:", searchPath);
+        console.log("Header: Constructed search path:", searchPath);
         
         // Check if we're already on the search page
         if (location.pathname === '/search') {
-          console.log("Already on search page, using replace to update query");
+          console.log("Header: Already on search page, using replace to update query");
           // Use replace to avoid adding to history stack
           navigate(searchPath, { replace: true });
         } else {
-          console.log("Navigating to search page");
+          console.log("Header: Navigating to search page");
           navigate(searchPath);
         }
         
         // Log after navigation attempt to verify it was called
-        console.log("Navigation function called");
+        console.log("Header: Navigation function called");
       }
     } else {
-      console.log("Empty query, search not performed");
+      console.log("Header: Empty query, search not performed");
     }
+    console.log("========================");
+  };
+
+  const handleButtonClick = () => {
+    console.log("Header: Search button clicked directly");
+    // The form submission will handle the actual search
   };
 
   return (
@@ -61,21 +74,24 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
         
         <div className="flex-1 max-w-md mx-4">
           {showSearch && (
-            <form onSubmit={handleSearch} className="relative">
+            <form onSubmit={handleSearch} className="relative flex items-center">
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search news..."
-                className="w-full py-1.5 pl-3 pr-10 rounded-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-sm focus:outline-none focus:ring-1 focus:ring-context-blue"
+                className="w-full py-1.5 pl-3 pr-3 rounded-l-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-sm focus:outline-none focus:ring-1 focus:ring-context-blue"
               />
-              <button 
+              <Button 
                 type="submit" 
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-context-blue"
+                size="sm"
+                className="rounded-l-none rounded-r-full"
+                onClick={handleButtonClick}
                 aria-label="Search"
               >
-                <Search size={16} />
-              </button>
+                <Search size={16} className="mr-1" />
+                Search
+              </Button>
             </form>
           )}
         </div>

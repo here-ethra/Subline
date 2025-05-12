@@ -15,22 +15,24 @@ const WalletRequired = ({ children }: WalletRequiredProps) => {
   
   useEffect(() => {
     // Add debug logs to track the connection status and current path
+    console.log("===== WALLET CHECK DEBUG =====");
     console.log("WalletRequired: Connection status:", isConnected);
     console.log("WalletRequired: Current path:", location.pathname);
     console.log("WalletRequired: Current search:", location.search);
     
-    // Allow search page to work even when not connected
-    const isSearchPage = location.pathname === '/search' && location.search.includes('q=');
-    
-    // Check if the user is not on the welcome page and is not connected
-    if (!isConnected && location.pathname !== '/welcome' && !isSearchPage) {
+    // Since we now want to require authentication for all routes, we'll simplify this
+    if (!isConnected && location.pathname !== '/welcome') {
+      console.log("WalletRequired: User not connected and not on welcome page");
       console.log("WalletRequired: Redirecting to welcome page");
-      // Preserve the current URL as a return destination
       navigate('/welcome');
+    } else {
+      console.log("WalletRequired: User is connected or on welcome page, allowing access");
     }
+    console.log("========================");
   }, [isConnected, navigate, location]);
 
   if (!isConnected) {
+    console.log("WalletRequired: Rendering connection interface");
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-4">
         <div className="max-w-md w-full text-center space-y-8">
@@ -46,6 +48,7 @@ const WalletRequired = ({ children }: WalletRequiredProps) => {
     );
   }
 
+  console.log("WalletRequired: User is connected, rendering children");
   return <>{children}</>;
 };
 

@@ -30,7 +30,11 @@ const App = () => {
             <BrowserRouter>
               <Routes>
                 <Route path="/welcome" element={<WelcomePage />} />
-                <Route path="/search" element={<SearchPage />} />
+                <Route path="/search" element={
+                  <WalletRequired>
+                    <SearchPage />
+                  </WalletRequired>
+                } />
                 <Route path="/" element={
                   <WalletRequired>
                     <HomePage />
@@ -41,7 +45,11 @@ const App = () => {
                     <ArticlePage />
                   </WalletRequired>
                 } />
-                <Route path="*" element={<NotFound />} />
+                <Route path="*" element={
+                  <WalletRequired>
+                    <NotFound />
+                  </WalletRequired>
+                } />
               </Routes>
             </BrowserRouter>
           </TooltipProvider>

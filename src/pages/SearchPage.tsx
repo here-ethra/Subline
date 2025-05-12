@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAccount } from 'wagmi';
 
 const SearchPage = () => {
   const [searchParams] = useSearchParams();
@@ -17,9 +18,14 @@ const SearchPage = () => {
   const [loading, setLoading] = useState(true);
   const [searchPerformed, setSearchPerformed] = useState(false);
   const { toast } = useToast();
+  const { isConnected } = useAccount();
   
   useEffect(() => {
-    console.log("SearchPage: Initial render with query:", query);
+    console.log("===== SEARCH PAGE DEBUG =====");
+    console.log("SearchPage: Component mounted/updated");
+    console.log("SearchPage: Current query param:", query);
+    console.log("SearchPage: Wallet connected:", isConnected);
+    console.log("SearchPage: Search already performed:", searchPerformed);
     
     // Handle empty query with more detailed logging
     if (!query || query.trim() === '') {
@@ -39,10 +45,12 @@ const SearchPage = () => {
       try {
         console.log("SearchPage: Calling searchNews API with query:", query);
         const searchResults = await searchNews(query);
-        console.log("SearchPage: Search results received:", searchResults);
+        console.log("SearchPage: Search results received:", searchResults.length, "articles");
         
         if (searchResults.length === 0) {
           console.log("SearchPage: No results found for query:", query);
+        } else {
+          console.log("SearchPage: First result title:", searchResults[0]?.title);
         }
         
         setResults(searchResults);
@@ -56,11 +64,13 @@ const SearchPage = () => {
         });
       } finally {
         setLoading(false);
+        console.log("SearchPage: Search completed, loading set to false");
       }
     };
     
     performSearch();
-  }, [query, toast]);
+    console.log("========================");
+  }, [query, toast, searchPerformed]);
   
   const handleSearch = (newQuery: string) => {
     console.log("SearchPage: New search handler called with query:", newQuery);
@@ -80,7 +90,10 @@ const SearchPage = () => {
           variant="ghost"
           size="sm"
           className="mb-4"
-          onClick={() => navigate('/')}
+          onClick={() => {
+            console.log("SearchPage: Back to Headlines button clicked");
+            navigate('/');
+          }}
         >
           <ArrowLeft size={16} className="mr-1" /> Back to Headlines
         </Button>
@@ -116,7 +129,10 @@ const SearchPage = () => {
                 <Button 
                   variant="outline" 
                   className="mt-4"
-                  onClick={() => navigate('/')}
+                  onClick={() => {
+                    console.log("SearchPage: Return to Headlines button clicked");
+                    navigate('/');
+                  }}
                 >
                   Return to Headlines
                 </Button>

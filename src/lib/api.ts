@@ -45,6 +45,7 @@ export interface ArticleContext {
 export async function fetchTopHeadlines(country = 'in'): Promise<NewsArticle[]> {
   try {
     // For demo purposes, using a mock response
+    console.log("API: fetchTopHeadlines called for country:", country);
     const mockResponse: NewsResponse = {
       status: "success",
       totalResults: 5,
@@ -103,6 +104,7 @@ export async function fetchTopHeadlines(country = 'in'): Promise<NewsArticle[]> 
       ]
     };
 
+    console.log("API: Returning mock headlines");
     return mockResponse.results;
   } catch (error) {
     console.error('Error fetching news:', error);
@@ -112,10 +114,13 @@ export async function fetchTopHeadlines(country = 'in'): Promise<NewsArticle[]> 
 
 export async function searchNews(query: string, country = 'in'): Promise<NewsArticle[]> {
   try {
+    console.log("===== SEARCH API DEBUG =====");
     console.log("API: Searching news with query:", query);
+    console.log("API: Search country parameter:", country);
     
     if (!query || query.trim() === '') {
       console.log("API: Empty search query received");
+      console.log("========================");
       return [];
     }
     
@@ -157,11 +162,14 @@ export async function searchNews(query: string, country = 'in'): Promise<NewsArt
     ];
     
     console.log("API: Generated mock search results:", mockResults.length);
+    console.log("API: First result title:", mockResults[0]?.title);
+    console.log("========================");
     return mockResults;
   } catch (error) {
     console.error('Error searching news:', error);
     // Return empty array instead of throwing to avoid breaking the UI
     console.log("API: Returning empty array due to error");
+    console.log("========================");
     return [];
   }
 }
