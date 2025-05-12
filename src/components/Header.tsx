@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Search } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 
 interface HeaderProps {
@@ -13,6 +13,7 @@ interface HeaderProps {
 const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
   
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,8 +24,17 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
         console.log("Using provided onSearch handler");
         onSearch(query);
       } else {
-        console.log("Navigating to search page");
-        navigate(`/search?q=${encodeURIComponent(query)}`);
+        console.log("Navigating to search page with query:", query);
+        const searchPath = `/search?q=${encodeURIComponent(query.trim())}`;
+        console.log("Search path:", searchPath);
+        
+        // Check if we're already on the search page
+        if (location.pathname === '/search') {
+          // Use replace to avoid adding to history stack
+          navigate(searchPath, { replace: true });
+        } else {
+          navigate(searchPath);
+        }
       }
     } else {
       console.log("Empty query, search not performed");

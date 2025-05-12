@@ -30,13 +30,15 @@ interface NewsResponse {
   nextPage?: string;
 }
 
-// Context analysis type
+// Context analysis type - updated to match the new output format
 export interface ArticleContext {
   summary: string;
+  whyItMatters: string;
   timeline: { date: string; event: string }[];
-  stakeholders: { name: string; role: string }[];
-  background: string;
-  systemsPerspective: string; // Ensuring this is a string type
+  stakeholders: { name: string; stake: string }[];
+  perspectives: string;
+  patterns: string;
+  changePoints: string;
 }
 
 // Fetch news from NewsData.io API
@@ -101,15 +103,6 @@ export async function fetchTopHeadlines(country = 'in'): Promise<NewsArticle[]> 
       ]
     };
 
-    // In production, replace this with actual API call:
-    // const response = await fetch(
-    //   `https://newsdata.io/api/1/news?apikey=${NEWS_API_KEY}&country=${country}&language=en`,
-    //   { headers: { 'Accept': 'application/json' } }
-    // );
-    // if (!response.ok) throw new Error('Failed to fetch news');
-    // const data = await response.json();
-    // return data.results;
-
     return mockResponse.results;
   } catch (error) {
     console.error('Error fetching news:', error);
@@ -119,32 +112,45 @@ export async function fetchTopHeadlines(country = 'in'): Promise<NewsArticle[]> 
 
 export async function searchNews(query: string, country = 'in'): Promise<NewsArticle[]> {
   try {
-    console.log("Searching news with query:", query);
+    console.log("API: Searching news with query:", query);
+    
+    if (!query || query.trim() === '') {
+      console.log("API: Empty search query received");
+      return [];
+    }
     
     // Mock search results based on query
-    // In production, replace with actual API call
     const mockResults: NewsArticle[] = [
       {
-        title: `Search results for "${query}" - Top story`,
-        description: `This is a sample search result for "${query}", showing how the search functionality would work.`,
+        title: `${query} - Latest Developments`,
+        description: `Recent developments related to "${query}" show significant impact across multiple sectors.`,
         source: "Search News",
         url: "https://example.com/search",
         image_url: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d",
         published_at: "2025-05-10T09:45:00Z",
-        id: "search-1"
+        id: `search-${Date.now()}-1`
       },
       {
-        title: `More about "${query}" - Related news`,
-        description: `Additional information related to "${query}" from various sources compiled for your convenience.`,
+        title: `${query} - Analysis and Insights`,
+        description: `Experts provide analysis on how "${query}" is influencing market trends and future prospects.`,
         source: "Topic Analysis",
         url: "https://example.com/topic-analysis",
         image_url: "https://images.unsplash.com/photo-1569060368216-3b9ee6d1a5d2",
         published_at: "2025-05-09T14:20:00Z",
-        id: "search-2"
+        id: `search-${Date.now()}-2`
+      },
+      {
+        title: `The Impact of ${query} on Global Markets`,
+        description: `How "${query}" is reshaping global markets and creating new opportunities for businesses.`,
+        source: "Global Trends",
+        url: "https://example.com/global-trends",
+        image_url: "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144",
+        published_at: "2025-05-08T11:30:00Z",
+        id: `search-${Date.now()}-3`
       }
     ];
     
-    console.log("Generated mock search results:", mockResults.length);
+    console.log("API: Generated mock search results:", mockResults.length);
     return mockResults;
   } catch (error) {
     console.error('Error searching news:', error);
@@ -164,74 +170,89 @@ export async function generateArticleContext(article: NewsArticle): Promise<Arti
       ${article.category ? `Categories: ${article.category.join(', ')}` : ''}
     `;
 
-    // Call OpenAI to generate context
     console.log("Generating context for article:", article.title);
     
     try {
+      // Use a faster model and set a reasonable timeout
+      const startTime = Date.now();
       const completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini", // Using a cost-effective model
+        model: "gpt-4o-mini", // Using a faster model
         messages: [
           {
             role: "system",
-            content: "You are a systems thinker. Analyze the following news article from a systems thinking perspective. Identify the key components of the system involved, feedback loops, stakeholders, patterns, and potential leverage points for change."
+            content: `You are a systems thinker and a journalist.
+
+Given a news headline or short summary, break it down into a clear, structured explanation that helps a regular person understand the full context.
+
+Avoid jargon. Instead of using systems thinking terms like "leverage points," explain them in everyday language — e.g., "places where small changes could make a big difference".
+
+Structure your analysis using exactly these headings and emoji:
+
+🧵 Summary
+🔥 Why This Matters
+📜 How We Got Here (Timeline)
+💸 Who Benefits or Loses
+🔍 Different Perspectives
+🔁 Patterns + Loops
+🛠️ Where Change Can Happen
+
+Respond in JSON format with these exact fields:
+{
+  "summary": "A clear and short explanation of the story.",
+  "whyItMatters": "What's at stake? Why should people care about this?",
+  "timeline": [
+    {"date": "Year or period", "event": "Description of key event"}
+  ],
+  "stakeholders": [
+    {"name": "Group or person name", "stake": "How they're affected"}
+  ],
+  "perspectives": "What are opposing views, and why do people see this differently?",
+  "patterns": "Describe any repeating cycles that keep the situation going.",
+  "changePoints": "1-3 places where small shifts could make meaningful impact."
+}
+
+Keep your response concise but informative.`
           },
           {
             role: "user",
-            content: `Analyze this news article from a systems thinking perspective and provide context in JSON format with the following structure:
-            {
-              "summary": "Brief summary of the article",
-              "timeline": [
-                {"date": "YYYY-MM", "event": "Description of relevant event"},
-                ...
-              ],
-              "stakeholders": [
-                {"name": "Stakeholder name", "role": "Stakeholder's role in this context"},
-                ...
-              ],
-              "background": "Background information relevant to understanding this news",
-              "systemsPerspective": "Analysis identifying key components of the system involved, feedback loops, patterns, and potential leverage points for change."
-            }
-            
-            News article:
-            ${content}`
+            content: `Analyze this news article: ${content}`
           }
-        ]
+        ],
+        temperature: 0.7,
+        max_tokens: 1000,
+        response_format: { type: "json_object" } // Force JSON response
       });
       
-      console.log("OpenAI response received:", completion.choices[0].message);
+      const processingTime = Date.now() - startTime;
+      console.log(`OpenAI response received in ${processingTime}ms`);
       
       // Parse the response
-      let contextData: ArticleContext;
       try {
         const responseText = completion.choices[0].message.content || "";
-        // Extract JSON from the response (it might be wrapped in markdown code blocks)
-        const jsonMatch = responseText.match(/```json\n([\s\S]*)\n```/) || 
-                         responseText.match(/```\n([\s\S]*)\n```/) || 
-                         [null, responseText];
+        let contextData: ArticleContext;
         
-        const jsonStr = jsonMatch[1] || responseText;
-        const parsedData = JSON.parse(jsonStr);
-        
-        // Ensure systemsPerspective is a string, not an object
-        if (typeof parsedData.systemsPerspective !== 'string') {
-          console.log("Converting systemsPerspective to string:", parsedData.systemsPerspective);
-          parsedData.systemsPerspective = JSON.stringify(parsedData.systemsPerspective) || 
-            "A systems perspective analysis wasn't available in the expected format.";
+        try {
+          contextData = JSON.parse(responseText);
+          console.log("Successfully parsed OpenAI response as JSON");
+        } catch (parseError) {
+          console.error("Failed to parse OpenAI response:", parseError);
+          throw new Error("Could not parse context data");
         }
         
-        contextData = parsedData;
-        
-        // Ensure the response has the expected structure
-        if (!contextData.summary || !contextData.timeline || !contextData.stakeholders || 
-            !contextData.background || !contextData.systemsPerspective) {
+        // Validate the structure matches our interface
+        if (!contextData.summary || !contextData.whyItMatters || 
+            !contextData.timeline || !contextData.stakeholders ||
+            !contextData.perspectives || !contextData.patterns ||
+            !contextData.changePoints) {
+          console.error("Invalid context data structure:", contextData);
           throw new Error("Incomplete context data from OpenAI");
         }
+        
+        return contextData;
       } catch (parseError) {
-        console.error("Failed to parse OpenAI response:", parseError);
-        throw new Error("Could not parse context data");
+        console.error("Failed to process OpenAI response:", parseError);
+        throw new Error("Could not process context data");
       }
-      
-      return contextData;
     } catch (openaiError) {
       console.error("OpenAI API error:", openaiError);
       // Fallback to mock data
@@ -251,28 +272,32 @@ function generateMockContext(article: NewsArticle): ArticleContext {
   const mockContext: ArticleContext = {
     summary: `This is a summary of the article about ${article.title}. The article discusses key developments in this area and their potential implications.`,
     
+    whyItMatters: `This story matters because it affects millions of people, impacts economic stability, and could influence future policy decisions in this domain.`,
+    
     timeline: [
-      { date: "January 2025", event: "Initial developments related to this topic" },
-      { date: "March 2025", event: "Key milestone that preceded this news" },
+      { date: "2024", event: "Initial developments related to this topic" },
+      { date: "Early 2025", event: "Key milestone that preceded this news" },
       { date: "May 2025", event: "The current event as reported in the article" }
     ],
     
     stakeholders: [
-      { name: "Government Agencies", role: "Regulatory oversight and policy implementation" },
-      { name: "Industry Leaders", role: "Market participants affected by these developments" },
-      { name: "General Public", role: "End users or beneficiaries of the reported changes" }
+      { name: "Government Agencies", stake: "Responsible for regulation and oversight in this area" },
+      { name: "Industry Leaders", stake: "Financial interests and market position affected by these developments" },
+      { name: "General Public", stake: "Daily life and future opportunities impacted by these changes" }
     ],
     
-    background: `This is background information that explains the historical context and important factors leading up to the current news. It provides readers with essential knowledge to understand why this news matters.`,
+    perspectives: `Some see this as a positive development that will drive innovation and growth, while others are concerned about potential negative consequences for certain communities or long-term sustainability.`,
     
-    systemsPerspective: `From a systems thinking perspective, this news represents an important shift in how various elements interact. There are several feedback loops at play, including how regulatory changes affect market behavior, which in turn influences future policy decisions. The root causes of these developments can be traced to economic pressures, technological advancements, and shifting social priorities.`
+    patterns: `This situation follows a familiar pattern where initial policy changes lead to market adaptations, which then trigger further regulatory responses, creating a cycle of adjustment and readjustment.`,
+    
+    changePoints: `Three areas where meaningful change could happen: 1) More inclusive stakeholder participation in decision-making; 2) Better data collection and transparency about impacts; 3) Alignment of short-term incentives with long-term goals.`
   };
 
   // Customize the mock response based on article content
   if (article.category?.includes('technology')) {
-    mockContext.stakeholders.push({ name: "Tech Companies", role: "Primary innovators and implementers" });
+    mockContext.stakeholders.push({ name: "Tech Companies", stake: "Driving innovation while managing competitive pressures" });
   } else if (article.category?.includes('politics')) {
-    mockContext.stakeholders.push({ name: "Political Parties", role: "Policy advocates and decision makers" });
+    mockContext.stakeholders.push({ name: "Political Parties", stake: "Competing visions for policy direction and public support" });
   }
 
   return mockContext;
@@ -281,10 +306,4 @@ function generateMockContext(article: NewsArticle): ArticleContext {
 // Detect user's country based on IP (mock implementation)
 export function detectUserCountry(): Promise<string> {
   return Promise.resolve('in'); // Default to India for demo
-  
-  // In production:
-  // return fetch('https://ipapi.co/json/')
-  //   .then(response => response.json())
-  //   .then(data => data.country_code.toLowerCase())
-  //   .catch(() => 'in'); // Default to India if detection fails
 }

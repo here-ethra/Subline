@@ -2,39 +2,19 @@
 import { ArticleContext } from '@/lib/api';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Calendar, Users, Globe, Info, Clock } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { BookmarkCheck, Calendar, FileText, Link, MessageSquare, ArrowUp, ArrowDown } from 'lucide-react';
 
 interface ContextSectionProps {
   context: ArticleContext;
 }
 
 const ContextSection = ({ context }: ContextSectionProps) => {
-  // Ensure systemsPerspective is properly rendered as a string
-  const [systemsPerspective, setSystemsPerspective] = useState<string>("");
-  
-  useEffect(() => {
-    // Handle potential object or string format
-    if (context.systemsPerspective) {
-      if (typeof context.systemsPerspective === 'string') {
-        setSystemsPerspective(context.systemsPerspective);
-      } else {
-        // If somehow it's still an object, stringify it
-        try {
-          setSystemsPerspective(JSON.stringify(context.systemsPerspective));
-        } catch (e) {
-          setSystemsPerspective("Could not parse systems perspective data.");
-        }
-      }
-    }
-  }, [context.systemsPerspective]);
-
   return (
     <div className="space-y-6 my-6">
       <section>
         <div className="flex items-center gap-2 mb-3">
-          <Info className="text-context-blue" size={18} />
-          <h3 className="text-lg font-medium">Summary</h3>
+          <BookmarkCheck className="text-context-blue" size={18} />
+          <h3 className="text-lg font-medium">🧵 Summary</h3>
         </div>
         <Card className="p-4 bg-gray-50 dark:bg-gray-800">
           <p className="text-sm">{context.summary}</p>
@@ -45,8 +25,20 @@ const ContextSection = ({ context }: ContextSectionProps) => {
 
       <section>
         <div className="flex items-center gap-2 mb-3">
-          <Clock className="text-context-blue" size={18} />
-          <h3 className="text-lg font-medium">Timeline</h3>
+          <FileText className="text-context-blue" size={18} />
+          <h3 className="text-lg font-medium">🔥 Why This Matters</h3>
+        </div>
+        <Card className="p-4 bg-gray-50 dark:bg-gray-800">
+          <p className="text-sm">{context.whyItMatters}</p>
+        </Card>
+      </section>
+
+      <Separator />
+
+      <section>
+        <div className="flex items-center gap-2 mb-3">
+          <Calendar className="text-context-blue" size={18} />
+          <h3 className="text-lg font-medium">📜 How We Got Here (Timeline)</h3>
         </div>
         <Card className="p-4 bg-gray-50 dark:bg-gray-800">
           <ul className="space-y-3">
@@ -66,15 +58,15 @@ const ContextSection = ({ context }: ContextSectionProps) => {
 
       <section>
         <div className="flex items-center gap-2 mb-3">
-          <Users className="text-context-blue" size={18} />
-          <h3 className="text-lg font-medium">Key Stakeholders</h3>
+          <ArrowUp className="text-context-blue" size={18} />
+          <h3 className="text-lg font-medium">💸 Who Benefits or Loses</h3>
         </div>
         <Card className="p-4 bg-gray-50 dark:bg-gray-800">
           <ul className="space-y-3">
             {context.stakeholders.map((stakeholder, index) => (
               <li key={index} className="flex flex-col">
                 <span className="text-sm font-medium">{stakeholder.name}</span>
-                <span className="text-xs text-gray-500 dark:text-gray-400">{stakeholder.role}</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">{stakeholder.stake}</span>
               </li>
             ))}
           </ul>
@@ -85,11 +77,11 @@ const ContextSection = ({ context }: ContextSectionProps) => {
 
       <section>
         <div className="flex items-center gap-2 mb-3">
-          <Globe className="text-context-blue" size={18} />
-          <h3 className="text-lg font-medium">Background</h3>
+          <MessageSquare className="text-context-blue" size={18} />
+          <h3 className="text-lg font-medium">🔍 Different Perspectives</h3>
         </div>
         <Card className="p-4 bg-gray-50 dark:bg-gray-800">
-          <p className="text-sm">{context.background}</p>
+          <p className="text-sm">{context.perspectives}</p>
         </Card>
       </section>
 
@@ -97,11 +89,23 @@ const ContextSection = ({ context }: ContextSectionProps) => {
 
       <section>
         <div className="flex items-center gap-2 mb-3">
-          <Calendar className="text-context-blue" size={18} />
-          <h3 className="text-lg font-medium">Systems Perspective</h3>
+          <ArrowDown className="text-context-blue" size={18} />
+          <h3 className="text-lg font-medium">🔁 Patterns + Loops</h3>
         </div>
         <Card className="p-4 bg-gray-50 dark:bg-gray-800">
-          <p className="text-sm">{systemsPerspective}</p>
+          <p className="text-sm">{context.patterns}</p>
+        </Card>
+      </section>
+
+      <Separator />
+
+      <section>
+        <div className="flex items-center gap-2 mb-3">
+          <Link className="text-context-blue" size={18} />
+          <h3 className="text-lg font-medium">🛠️ Where Change Can Happen</h3>
+        </div>
+        <Card className="p-4 bg-gray-50 dark:bg-gray-800">
+          <p className="text-sm">{context.changePoints}</p>
         </Card>
       </section>
     </div>

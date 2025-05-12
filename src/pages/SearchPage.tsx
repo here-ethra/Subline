@@ -18,8 +18,8 @@ const SearchPage = () => {
   const { toast } = useToast();
   
   useEffect(() => {
-    if (!query) {
-      console.log("No query found, redirecting to home");
+    if (!query || query.trim() === '') {
+      console.log("SearchPage: No query found, redirecting to home");
       navigate('/');
       return;
     }
@@ -29,12 +29,17 @@ const SearchPage = () => {
     const performSearch = async () => {
       setLoading(true);
       try {
-        console.log("Calling searchNews API with query:", query);
+        console.log("SearchPage: Calling searchNews API with query:", query);
         const searchResults = await searchNews(query);
-        console.log("Search results received:", searchResults);
+        console.log("SearchPage: Search results received:", searchResults);
+        
+        if (searchResults.length === 0) {
+          console.log("SearchPage: No results found for query:", query);
+        }
+        
         setResults(searchResults);
       } catch (error) {
-        console.error('Search failed:', error);
+        console.error('SearchPage: Search failed:', error);
         toast({
           title: 'Error',
           description: 'Failed to search for news. Please try again later.',
@@ -49,8 +54,12 @@ const SearchPage = () => {
   }, [query, navigate, toast]);
   
   const handleSearch = (newQuery: string) => {
-    console.log("Search handler called with query:", newQuery);
-    navigate(`/search?q=${encodeURIComponent(newQuery)}`);
+    console.log("SearchPage: New search handler called with query:", newQuery);
+    if (newQuery.trim() === '') {
+      console.log("SearchPage: Empty search query, not navigating");
+      return;
+    }
+    navigate(`/search?q=${encodeURIComponent(newQuery.trim())}`);
   };
   
   return (
