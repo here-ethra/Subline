@@ -1,4 +1,3 @@
-
 import OpenAI from "openai";
 
 // News API configuration
@@ -109,15 +108,11 @@ export async function fetchTopHeadlines(country = 'in'): Promise<NewsArticle[]> 
   try {
     console.log("API: fetchTopHeadlines called for country:", country);
     
-    // Add a random parameter to prevent caching issues
-    const cacheBuster = Date.now();
-    
     const endpoint = `${NEWS_API_BASE_URL}/news`;
     const params = new URLSearchParams({
       apikey: NEWS_API_KEY,
       country: country,
-      language: 'en',
-      _cb: cacheBuster.toString()
+      language: 'en'
     });
     
     console.log(`API: Calling NewsData.io endpoint: ${endpoint}?${params.toString()}`);
@@ -175,16 +170,12 @@ export async function searchNews(query: string, country = 'in'): Promise<NewsArt
     const trimmedQuery = query.trim();
     console.log("API: Trimmed query:", trimmedQuery);
     
-    // Add a random parameter to prevent caching issues
-    const cacheBuster = Date.now();
-    
     const endpoint = `${NEWS_API_BASE_URL}/news`;
     const params = new URLSearchParams({
       apikey: NEWS_API_KEY,
       q: trimmedQuery,
       country: country,
-      language: 'en',
-      _cb: cacheBuster.toString()
+      language: 'en'
     });
     
     console.log(`API: Calling NewsData.io search endpoint: ${endpoint}?${params.toString()}`);

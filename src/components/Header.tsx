@@ -68,14 +68,14 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
   };
 
   return (
-    <header className="sticky top-0 z-30 w-full neo-glass backdrop-blur">
+    <header className="sticky top-0 z-30 w-full neo-glass shadow-subline">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center space-x-1">
           <button 
             onClick={() => navigate('/')}
-            className="text-xl font-bold bg-gradient-to-r from-blue-500 to-indigo-600 bg-clip-text text-transparent"
+            className="text-xl font-bold text-gradient"
           >
-            Context
+            Subline
           </button>
         </div>
         
@@ -87,12 +87,12 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search news..."
-                className="w-full py-1.5 pl-3 pr-3 rounded-l-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800/60 text-sm focus:outline-none focus:ring-1 focus:ring-context-blue"
+                className="w-full py-1.5 pl-3 pr-3 rounded-l-full border border-gray-300 dark:border-gray-600 dark:bg-subline-darkCard/70 text-sm focus:outline-none focus:ring-1 focus:ring-subline-indigo shadow-subline-inset"
               />
               <Button 
                 type="submit" 
                 size="sm"
-                className="rounded-l-none rounded-r-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700"
+                className="rounded-l-none rounded-r-full bg-gradient-indigo-coral hover:opacity-90 shadow-sm"
                 aria-label="Search"
               >
                 <Search size={16} className="mr-1" />

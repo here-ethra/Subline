@@ -21,26 +21,26 @@ const NewsCard = ({ article }: NewsCardProps) => {
 
   return (
     <Card 
-      className="apple-card group cursor-pointer overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 bg-white/80 dark:bg-gray-800/60 backdrop-blur-sm animate-in fade-in"
+      className="subline-card group cursor-pointer overflow-hidden border border-gray-800/30 dark:border-gray-700/30 bg-white/90 dark:bg-subline-darkCard/90 backdrop-blur-sm animate-in fade-in"
       onClick={handleClick}
     >
       {article.image_url && (
-        <div className="relative w-full h-48 overflow-hidden">
+        <div className="relative w-full h-52 overflow-hidden">
           <img 
             src={article.image_url} 
             alt={article.title} 
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             onError={(e) => {
               (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?ixlib=rb-4.0.3';
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-50 group-hover:opacity-70 transition-opacity duration-300"></div>
         </div>
       )}
       <CardHeader className="p-4 pb-2">
-        <h3 className="text-lg font-semibold line-clamp-2 group-hover:text-primary transition-colors">{article.title}</h3>
+        <h3 className="text-lg font-semibold line-clamp-2 group-hover:text-gradient transition-all duration-300">{article.title}</h3>
         <div className="text-xs text-gray-500 dark:text-gray-400 flex justify-between mt-1">
-          <span>{article.source}</span>
+          <span className="font-medium">{article.source}</span>
           <span>{formattedDate}</span>
         </div>
       </CardHeader>
