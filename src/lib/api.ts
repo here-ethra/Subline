@@ -1,4 +1,3 @@
-
 import OpenAI from "openai";
 
 // Replace with actual API keys in production
@@ -37,7 +36,7 @@ export interface ArticleContext {
   timeline: { date: string; event: string }[];
   stakeholders: { name: string; role: string }[];
   background: string;
-  systemsPerspective: string;
+  systemsPerspective: string; // Ensuring this is a string type
 }
 
 // Fetch news from NewsData.io API
@@ -120,6 +119,8 @@ export async function fetchTopHeadlines(country = 'in'): Promise<NewsArticle[]> 
 
 export async function searchNews(query: string, country = 'in'): Promise<NewsArticle[]> {
   try {
+    console.log("Searching news with query:", query);
+    
     // Mock search results based on query
     // In production, replace with actual API call
     const mockResults: NewsArticle[] = [
@@ -142,7 +143,8 @@ export async function searchNews(query: string, country = 'in'): Promise<NewsArt
         id: "search-2"
       }
     ];
-
+    
+    console.log("Generated mock search results:", mockResults.length);
     return mockResults;
   } catch (error) {
     console.error('Error searching news:', error);
@@ -208,7 +210,16 @@ export async function generateArticleContext(article: NewsArticle): Promise<Arti
                          [null, responseText];
         
         const jsonStr = jsonMatch[1] || responseText;
-        contextData = JSON.parse(jsonStr);
+        const parsedData = JSON.parse(jsonStr);
+        
+        // Ensure systemsPerspective is a string, not an object
+        if (typeof parsedData.systemsPerspective !== 'string') {
+          console.log("Converting systemsPerspective to string:", parsedData.systemsPerspective);
+          parsedData.systemsPerspective = JSON.stringify(parsedData.systemsPerspective) || 
+            "A systems perspective analysis wasn't available in the expected format.";
+        }
+        
+        contextData = parsedData;
         
         // Ensure the response has the expected structure
         if (!contextData.summary || !contextData.timeline || !contextData.stakeholders || 

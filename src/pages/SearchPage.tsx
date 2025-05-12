@@ -19,14 +19,19 @@ const SearchPage = () => {
   
   useEffect(() => {
     if (!query) {
+      console.log("No query found, redirecting to home");
       navigate('/');
       return;
     }
     
+    console.log("SearchPage: Searching for:", query);
+    
     const performSearch = async () => {
       setLoading(true);
       try {
+        console.log("Calling searchNews API with query:", query);
         const searchResults = await searchNews(query);
+        console.log("Search results received:", searchResults);
         setResults(searchResults);
       } catch (error) {
         console.error('Search failed:', error);
@@ -44,6 +49,7 @@ const SearchPage = () => {
   }, [query, navigate, toast]);
   
   const handleSearch = (newQuery: string) => {
+    console.log("Search handler called with query:", newQuery);
     navigate(`/search?q=${encodeURIComponent(newQuery)}`);
   };
   
@@ -80,10 +86,11 @@ const SearchPage = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {results.map((article) => (
-              <NewsCard key={article.id} article={article} />
-            ))}
-            {results.length === 0 && (
+            {results.length > 0 ? (
+              results.map((article) => (
+                <NewsCard key={article.id} article={article} />
+              ))
+            ) : (
               <div className="col-span-full text-center py-10">
                 <p className="text-gray-500">No results found for "{query}"</p>
                 <Button 

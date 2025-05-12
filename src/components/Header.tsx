@@ -16,12 +16,18 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
   
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Header search triggered with query:", query);
+    
     if (query.trim()) {
       if (onSearch) {
+        console.log("Using provided onSearch handler");
         onSearch(query);
       } else {
+        console.log("Navigating to search page");
         navigate(`/search?q=${encodeURIComponent(query)}`);
       }
+    } else {
+      console.log("Empty query, search not performed");
     }
   };
 
@@ -50,6 +56,7 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
               <button 
                 type="submit" 
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-context-blue"
+                aria-label="Search"
               >
                 <Search size={16} />
               </button>

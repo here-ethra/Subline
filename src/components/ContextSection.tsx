@@ -1,13 +1,34 @@
+
 import { ArticleContext } from '@/lib/api';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Calendar, Users, Globe, Info, Clock } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 interface ContextSectionProps {
   context: ArticleContext;
 }
 
 const ContextSection = ({ context }: ContextSectionProps) => {
+  // Ensure systemsPerspective is properly rendered as a string
+  const [systemsPerspective, setSystemsPerspective] = useState<string>("");
+  
+  useEffect(() => {
+    // Handle potential object or string format
+    if (context.systemsPerspective) {
+      if (typeof context.systemsPerspective === 'string') {
+        setSystemsPerspective(context.systemsPerspective);
+      } else {
+        // If somehow it's still an object, stringify it
+        try {
+          setSystemsPerspective(JSON.stringify(context.systemsPerspective));
+        } catch (e) {
+          setSystemsPerspective("Could not parse systems perspective data.");
+        }
+      }
+    }
+  }, [context.systemsPerspective]);
+
   return (
     <div className="space-y-6 my-6">
       <section>
@@ -80,7 +101,7 @@ const ContextSection = ({ context }: ContextSectionProps) => {
           <h3 className="text-lg font-medium">Systems Perspective</h3>
         </div>
         <Card className="p-4 bg-gray-50 dark:bg-gray-800">
-          <p className="text-sm">{context.systemsPerspective}</p>
+          <p className="text-sm">{systemsPerspective}</p>
         </Card>
       </section>
     </div>
