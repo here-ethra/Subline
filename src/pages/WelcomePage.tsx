@@ -47,7 +47,7 @@ const WelcomePage = () => {
               <img src="/subline.png" alt="Subline logo" className="inline-block" />
             </div>
             
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-[#85FF00] via-[#85FF00]/90 to-[#85FF00]/70 bg-clip-text text-transparent px-4">
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-[#85FF00] via-[#85FF00]/90 to-[#85FF00]/70 bg-clip-text text-transparent px-4 font-space-grotesk">
               Discover the Stories Behind the Headlines
             </h2>
             
@@ -76,7 +76,7 @@ const WelcomePage = () => {
           
           {/* Features */}
           <div className="pt-8 space-y-8">
-            <h3 className="text-2xl font-medium bg-gradient-to-r from-[#85FF00] to-[#85FF00]/80 bg-clip-text text-transparent">
+            <h3 className="text-2xl font-medium bg-gradient-to-r from-[#85FF00] to-[#85FF00]/80 bg-clip-text text-transparent font-sora">
               Features
             </h3>
             
@@ -86,7 +86,7 @@ const WelcomePage = () => {
                   <FileText size={22} className="text-black" />
                 </div>
                 <div>
-                  <span className="font-semibold text-white text-lg">Headlines</span>
+                  <span className="font-semibold text-white text-lg font-sora">Headlines</span>
                   <p className="text-gray-400">Focused on critical events that matter to you</p>
                 </div>
               </div>
@@ -96,7 +96,7 @@ const WelcomePage = () => {
                   <Search size={22} className="text-black" />
                 </div>
                 <div>
-                  <span className="font-semibold text-white text-lg">Intelligent Search</span>
+                  <span className="font-semibold text-white text-lg font-sora">Intelligent Search</span>
                   <p className="text-gray-400">Find exactly what you need, when you need it</p>
                 </div>
               </div>
@@ -106,7 +106,7 @@ const WelcomePage = () => {
                   <Layers size={22} className="text-black" />
                 </div>
                 <div>
-                  <span className="font-semibold text-white text-lg">Deep Context</span>
+                  <span className="font-semibold text-white text-lg font-sora">Deep Context</span>
                   <p className="text-gray-400">AI-powered analysis beyond the headlines</p>
                 </div>
               </div>
@@ -116,7 +116,7 @@ const WelcomePage = () => {
                   <Zap size={22} className="text-black" />
                 </div>
                 <div>
-                  <span className="font-semibold text-white text-lg">Instant Insights</span>
+                  <span className="font-semibold text-white text-lg font-sora">Instant Insights</span>
                   <p className="text-gray-400">Get the full picture in seconds</p>
                 </div>
               </div>

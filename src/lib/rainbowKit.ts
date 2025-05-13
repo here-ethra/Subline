@@ -3,7 +3,8 @@ import '@rainbow-me/rainbowkit/styles.css';
 
 import { 
   getDefaultWallets,
-  RainbowKitProvider 
+  RainbowKitProvider,
+  connectorsForWallets
 } from '@rainbow-me/rainbowkit';
 import { 
   http, 
@@ -23,6 +24,7 @@ import {
   type SmartContractAccount
 } from "@alchemy/aa-core";
 import { parseEther, formatUnits } from 'viem';
+import { coinbaseWallet } from '@rainbow-me/rainbowkit/wallets';
 
 // Using Base mainnet for production
 const projectId = 'YOUR_WALLETCONNECT_PROJECT_ID'; // Replace with actual project ID in production
@@ -30,10 +32,20 @@ const projectId = 'YOUR_WALLETCONNECT_PROJECT_ID'; // Replace with actual projec
 // Alchemy API Key for Base
 const alchemyApiKey = 'demo'; // Replace with actual Alchemy API key in production
 
-const { connectors } = getDefaultWallets({
-  appName: 'Context News App',
+// Use only Coinbase Wallet (remove other wallets)
+const { wallets } = getDefaultWallets({
+  appName: 'Subline News App',
   projectId,
 });
+
+const connectors = connectorsForWallets([
+  {
+    groupName: 'Recommended',
+    wallets: [
+      coinbaseWallet({ projectId, chains: [base] })
+    ],
+  },
+]);
 
 export const wagmiConfig = createConfig({
   chains: [base],

@@ -107,6 +107,8 @@ export default {
             fontFamily: {
               'inter': ['Inter', 'sans-serif'],
               'satoshi': ['Satoshi', 'sans-serif'],
+              'space-grotesk': ['Space Grotesk', 'sans-serif'],
+              'sora': ['Sora', 'sans-serif'],
             },
             boxShadow: {
               'subline': '0 8px 16px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.1)',
