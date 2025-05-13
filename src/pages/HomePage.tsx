@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import { fetchTopHeadlines, detectUserCountry, NewsArticle } from '@/lib/api';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
   const [headlines, setHeadlines] = useState<NewsArticle[]>([]);
@@ -14,6 +15,7 @@ const HomePage = () => {
   const { address } = useAccount();
   const { data: ensName } = useEnsName({ address });
   const { toast } = useToast();
+  const navigate = useNavigate();
   
   useEffect(() => {
     const loadHeadlines = async () => {
@@ -39,7 +41,10 @@ const HomePage = () => {
   }, [toast]);
   
   const handleSearch = (query: string) => {
-    // Redirect to search page handled by Header component
+    if (query.trim()) {
+      console.log("HomePage: Search requested for:", query);
+      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
+    }
   };
 
   return (

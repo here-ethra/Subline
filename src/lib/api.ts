@@ -14,12 +14,12 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true, // Note: In production, API calls should be made from a backend
 });
 
-// Important topics to include
-const IMPORTANT_CATEGORIES = ['top', 'world', 'politics', 'business', 'technology', 'science', 'health', 'environment'];
-const IMPORTANT_KEYWORDS = ['crypto', 'blockchain', 'safety', 'disaster', 'breakthrough', 'innovation', 'crisis', 'emergency'];
+// Focus on political, financial, and socio-economical news
+const IMPORTANT_CATEGORIES = ['politics', 'world', 'business', 'economy', 'finance', 'government', 'policy'];
+const IMPORTANT_KEYWORDS = ['economy', 'politics', 'financial', 'government', 'policy', 'socio-economic', 'crisis', 'election', 'budget', 'market', 'inflation', 'trade', 'employment', 'international', 'diplomatic'];
 
-// Categories to exclude
-const EXCLUDED_CATEGORIES = ['entertainment', 'sports', 'lifestyle', 'food', 'travel'];
+// Categories to exclude - expanded to filter out non-relevant content
+const EXCLUDED_CATEGORIES = ['entertainment', 'sports', 'lifestyle', 'food', 'travel', 'gaming', 'health', 'science', 'technology'];
 
 // Violence-related terms to filter out individual violence stories
 const VIOLENCE_KEYWORDS = ['murder', 'stabbing', 'shooting', 'killed', 'assault', 'homicide', 'robbery'];
@@ -81,11 +81,11 @@ function mapNewsDataToArticle(item: any): NewsArticle {
   };
 }
 
-// Check if an article is important based on our criteria
-function isImportantArticle(article: any): boolean {
+// Check if an article is focused on politics, finance, or socio-economical topics
+function isRelevantArticle(article: any): boolean {
   // Check categories
   if (article.category) {
-    // Exclude entertainment-related categories
+    // Exclude non-relevant categories
     if (article.category.some((cat: string) => 
       EXCLUDED_CATEGORIES.some(excluded => 
         cat.toLowerCase().includes(excluded.toLowerCase())
@@ -104,22 +104,23 @@ function isImportantArticle(article: any): boolean {
     }
   }
   
-  // Check keywords in title or description
+  // Check content for political, financial, and socio-economical keywords
   const textToCheck = `${article.title || ""} ${article.description || ""}`.toLowerCase();
   
   // Filter out individual violence stories
   if (VIOLENCE_KEYWORDS.some(keyword => textToCheck.includes(keyword.toLowerCase()))) {
-    // Only exclude if it seems like an isolated incident (not systemic/widespread)
+    // Only include if related to broader political or socio-economic context
     if (!textToCheck.includes('policy') && 
         !textToCheck.includes('government') && 
         !textToCheck.includes('nationwide') && 
+        !textToCheck.includes('economic') && 
         !textToCheck.includes('systemic') && 
         !textToCheck.includes('crisis')) {
       return false;
     }
   }
   
-  // Check for important keywords
+  // Check for important keywords related to our focus
   if (IMPORTANT_KEYWORDS.some(keyword => textToCheck.includes(keyword.toLowerCase()))) {
     return true;
   }
@@ -136,7 +137,8 @@ export async function fetchTopHeadlines(country = 'in'): Promise<NewsArticle[]> 
     const params = new URLSearchParams({
       apikey: NEWS_API_KEY,
       country: country,
-      language: 'en'
+      language: 'en',
+      category: IMPORTANT_CATEGORIES.slice(0, 3).join(',') // Add top categories as API parameter
     });
     
     console.log(`API: Calling NewsData.io endpoint: ${endpoint}?${params.toString()}`);
@@ -163,11 +165,11 @@ export async function fetchTopHeadlines(country = 'in'): Promise<NewsArticle[]> 
       throw new Error("Unexpected response format from NewsData.io API");
     }
     
-    // Filter to important articles only
-    const importantArticles = data.results.filter(isImportantArticle);
-    console.log("API: Important articles found:", importantArticles.length, "out of", data.results.length);
+    // Filter to relevant political, financial, and socio-economical articles only
+    const relevantArticles = data.results.filter(isRelevantArticle);
+    console.log("API: Relevant articles found:", relevantArticles.length, "out of", data.results.length);
     
-    const articles = importantArticles.map(mapNewsDataToArticle);
+    const articles = relevantArticles.map(mapNewsDataToArticle);
     console.log("API: Processed articles:", articles.length);
     
     return articles;
@@ -198,7 +200,9 @@ export async function searchNews(query: string, country = 'in'): Promise<NewsArt
       apikey: NEWS_API_KEY,
       q: trimmedQuery,
       country: country,
-      language: 'en'
+      language: 'en',
+      // Prioritize political, financial, and socio-economical categories
+      category: IMPORTANT_CATEGORIES.slice(0, 3).join(',')
     });
     
     const fullUrl = `${endpoint}?${params.toString()}`;
@@ -245,11 +249,11 @@ export async function searchNews(query: string, country = 'in'): Promise<NewsArt
       return [];
     }
     
-    // Filter to important articles for search results as well
-    const importantArticles = data.results.filter(isImportantArticle);
-    console.log("API: Important search results found:", importantArticles.length, "out of", data.results.length);
+    // Filter to relevant political, financial, and socio-economical articles for search results as well
+    const relevantArticles = data.results.filter(isRelevantArticle);
+    console.log("API: Relevant search results found:", relevantArticles.length, "out of", data.results.length);
     
-    const searchResults = importantArticles.map(mapNewsDataToArticle);
+    const searchResults = relevantArticles.map(mapNewsDataToArticle);
     console.log("API: Processed search results:", searchResults.length);
     console.log("API: First search result title:", searchResults[0]?.title);
     console.log("========================");

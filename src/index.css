@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -56,7 +57,7 @@
   }
   
   .subline-card:hover {
-    box-shadow: 0 2px 8px rgba(122, 255, 98, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 78, 255, 0.2);
   }
   
   .animate-in {
@@ -74,11 +75,11 @@
   }
   
   .accent-text {
-    @apply text-[#7aff62];
+    @apply text-[#004eff];
   }
 
   .bg-gradient-indigo-coral {
-    @apply bg-gradient-to-r from-[#7aff62] to-[#7aff62]/80;
+    @apply bg-gradient-to-r from-[#004eff] to-[#004eff]/80;
   }
 
   .text-gradient {
@@ -106,7 +107,7 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-[#7aff62]/50;
+  @apply bg-[#004eff]/50;
 }
 
 @keyframes fadeIn {
@@ -164,9 +165,10 @@ button {
   color: #000 !important;
 }
 
-/* Connected wallet button - REMOVING CUSTOM STYLING */
+/* Removing connected wallet custom styling */
+/* Connected wallet button - UPDATED */
 .rainbowkit-connect-button [data-testid="connected-wallet-modal"] {
-  /* Removing custom styles for connected wallet button as requested */
+  /* All custom styles removed for connected wallet button as requested */
 }
 
 /* RainbowKit modal fixes */

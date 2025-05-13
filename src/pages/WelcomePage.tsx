@@ -31,7 +31,7 @@ const WelcomePage = () => {
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1Ii8+PC9zdmc+')] opacity-40 z-0 pointer-events-none"></div>
       
       <header className="p-4 flex justify-between items-center relative z-10 border-b border-gray-800/30">
-        <div className="rainbowkit-connect-button">
+        <div>
           <ConnectButton showBalance={false} />
         </div>
       </header>
@@ -58,7 +58,7 @@ const WelcomePage = () => {
             <div className="flex justify-center p-4">
               <Button 
                 className="py-6 px-8 text-lg font-medium border border-[#004eff]/50 bg-black text-[#004eff] hover:bg-[#004eff] hover:text-black shadow-[0_0_15px_rgba(0,78,255,0.15)] transition-all duration-300 rounded-xl"
-                onClick={() => document.querySelector<HTMLElement>('.rainbowkit-connect-button button')?.click()}
+                onClick={() => document.querySelector('button[data-testid="rk-connect-button"]')?.click()}
               >
                 Connect Wallet to Continue
               </Button>

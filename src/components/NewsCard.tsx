@@ -22,11 +22,11 @@ const NewsCard = ({ article }: NewsCardProps) => {
 
   return (
     <Card 
-      className="cursor-pointer overflow-hidden border border-gray-800 bg-black hover:border-[#7aff62]/40 transition-all duration-300"
+      className="cursor-pointer overflow-hidden border border-gray-800 bg-black hover:border-[#004eff]/40 transition-all duration-300"
       onClick={handleClick}
     >
       <CardHeader className="p-4 pb-2">
-        <h3 className="text-lg font-semibold line-clamp-2 group-hover:text-[#7aff62] transition-all duration-300">{article.title}</h3>
+        <h3 className="text-lg font-semibold line-clamp-2 group-hover:text-[#004eff] transition-all duration-300">{article.title}</h3>
         <div className="text-xs text-gray-500 dark:text-gray-400 flex justify-between mt-1">
           <span className="font-medium">{article.source}</span>
           <span>{formattedDate}</span>
@@ -39,7 +39,7 @@ const NewsCard = ({ article }: NewsCardProps) => {
             {article.category.map((cat, index) => (
               <span 
                 key={index} 
-                className="inline-flex items-center px-2 py-1 text-xs rounded bg-black border border-[#7aff62]/30 text-[#7aff62]"
+                className="inline-flex items-center px-2 py-1 text-xs rounded bg-black border border-[#004eff]/30 text-[#004eff]"
               >
                 <Tag size={10} className="mr-1" />
                 {cat}
