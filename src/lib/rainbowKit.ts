@@ -37,11 +37,12 @@ const { wallets } = getDefaultWallets({
   projectId,
 });
 
+// Fix the coinbaseWallet configuration to match the expected API
 const connectors = connectorsForWallets([
   {
     groupName: 'Recommended',
     wallets: [
-      coinbaseWallet({ chains: [base] })
+      coinbaseWallet({ appName: 'Subline News App' })
     ],
   },
 ]);
