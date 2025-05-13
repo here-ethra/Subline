@@ -47,15 +47,16 @@ const WelcomePage = () => {
         <div className="max-w-3xl w-full space-y-12 animate-fade-in">
           {/* Hero section */}
           <div className="space-y-6 pt-8">
-            <div className="inline-block mb-6 p-4 rounded-full bg-gradient-to-br from-subline-accent/10 to-transparent backdrop-blur-sm border border-subline-accent/20 shadow-[0_0_15px_rgba(122,255,98,0.2)]">
+            {/* <div className="inline-block mb-6 p-4 rounded-full bg-gradient-to-br from-subline-accent/10 to-transparent backdrop-blur-sm border border-subline-accent/20 shadow-[0_0_15px_rgba(122,255,98,0.2)]">
               <div className="h-24 w-24 bg-gradient-to-br from-subline-accent to-subline-accent/70 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(122,255,98,0.3)]">
+                */}
                 <img src="/subline.png" alt="Subline" className="w-16 h-16 object-contain" />
-              </div>
-            </div>
+                {/* </div>
+            </div> */}
             
-            <h1 className="text-5xl font-bold tracking-tight bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
+            {/* <h1 className="text-5xl font-bold tracking-tight bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
               Subline
-            </h1>
+            </h1> */}
             
             <h2 className="text-3xl font-bold bg-gradient-to-r from-subline-accent via-subline-accent/90 to-subline-accent/70 bg-clip-text text-transparent px-4">
               Discover the Stories Behind the Headlines
