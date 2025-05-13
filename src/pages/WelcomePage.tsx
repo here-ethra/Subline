@@ -4,6 +4,8 @@ import { useAccount } from 'wagmi';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useTheme } from 'next-themes';
+import { FileText, Search, Layers, Zap } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const WelcomePage = () => {
   const { isConnected } = useAccount();
@@ -20,86 +22,118 @@ const WelcomePage = () => {
   }, [isConnected, navigate, setTheme]);
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden bg-subline-darkBg noise-bg">
-      <div className="absolute inset-0 bg-gradient-to-br from-subline-indigo/5 to-subline-coral/5 z-0 pointer-events-none"></div>
+    <div className="min-h-screen flex flex-col relative overflow-hidden bg-black">
+      {/* Background gradients */}
+      <div className="absolute inset-0 bg-gradient-to-br from-subline-accent/5 via-transparent to-subline-accent/5 z-0 pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(122,255,98,0.03),transparent_70%)] z-0 pointer-events-none"></div>
       
-      <header className="p-4 flex justify-between items-center relative z-10">
-        <img
-          src="/subline.png"
-          alt="Subline Logo"
-          className="h-8 w-auto"
-        />
+      {/* Noise texture overlay */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1Ii8+PC9zdmc+')] opacity-40 z-0 pointer-events-none"></div>
+      
+      <header className="p-4 flex justify-between items-center relative z-10 border-b border-gray-800/30">
+        <div>
+          <img
+            src="/subline.png"
+            alt="Subline Logo"
+            className="h-8 w-auto"
+          />
+        </div>
+        <div className="rainbowkit-connect-button">
+          <ConnectButton showBalance={false} />
+        </div>
       </header>
       
       <main className="flex-1 flex flex-col items-center justify-center p-6 text-center relative z-10">
-        <div className="max-w-md space-y-10 animate-in fade-in">
-          <div className="space-y-4">
-            <div className="inline-block mb-4 p-3 rounded-full bg-gradient-to-br from-subline-indigo/10 to-subline-coral/10 backdrop-blur-lg">
-              <div className="h-20 w-20 bg-gradient-indigo-coral rounded-full flex items-center justify-center shadow-subline">
-                <span className="text-3xl font-bold text-white">S</span>
+        <div className="max-w-3xl w-full space-y-12 animate-fade-in">
+          {/* Hero section */}
+          <div className="space-y-6 pt-8">
+            <div className="inline-block mb-6 p-4 rounded-full bg-gradient-to-br from-subline-accent/10 to-transparent backdrop-blur-sm border border-subline-accent/20 shadow-[0_0_15px_rgba(122,255,98,0.2)]">
+              <div className="h-24 w-24 bg-gradient-to-br from-subline-accent to-subline-accent/70 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(122,255,98,0.3)]">
+                <img src="/subline.png" alt="Subline" className="w-16 h-16 object-contain" />
               </div>
             </div>
-            <h2 className="text-4xl font-bold text-gradient">Discover the Stories Behind the Headlines</h2>
-            <p className="mt-4 text-lg text-gray-300">
-              Access premium insights with context that matters, delivered in a sleek, modern experience.
+            
+            <h1 className="text-5xl font-bold tracking-tight bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
+              Subline
+            </h1>
+            
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-subline-accent via-subline-accent/90 to-subline-accent/70 bg-clip-text text-transparent px-4">
+              Discover the Stories Behind the Headlines
+            </h2>
+            
+            <p className="mt-4 text-lg text-gray-300 max-w-xl mx-auto">
+              Access premium insights with context that matters, delivered in a sleek, modern experience built on Base.
             </p>
           </div>
           
-          <div className="space-y-4">
+          {/* Connect section */}
+          <div className="space-y-5">
             <div className="flex justify-center p-4">
-              <ConnectButton />
+              <Button 
+                className="py-6 px-8 text-lg font-medium border border-subline-accent/50 bg-black text-subline-accent hover:bg-subline-accent hover:text-black shadow-[0_0_15px_rgba(122,255,98,0.15)] transition-all duration-300 rounded-xl"
+                onClick={() => document.querySelector<HTMLElement>('.rainbowkit-connect-button button')?.click()}
+              >
+                Connect Wallet to Continue
+              </Button>
             </div>
             <p className="text-sm text-gray-400">
-              Connect your wallet on Base to continue
+              Connect your wallet on Base to access premium features
             </p>
           </div>
           
-          <div className="pt-10 space-y-8">
-            <h3 className="text-xl font-medium text-gradient">Premium Features</h3>
-            <ul className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-              <li className="flex items-start p-4 rounded-xl bg-gradient-card backdrop-blur-md border border-gray-800/30">
-                <div className="mr-3 bg-gradient-indigo-coral p-2 rounded-full">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          {/* Features */}
+          <div className="pt-8 space-y-8">
+            <h3 className="text-2xl font-medium bg-gradient-to-r from-subline-accent to-subline-accent/80 bg-clip-text text-transparent">
+              Premium Features
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+              <div className="flex items-start p-5 rounded-xl bg-gray-900/30 backdrop-blur-sm border border-gray-800/50 shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:border-subline-accent/30 hover:shadow-[0_4px_20px_rgba(122,255,98,0.1)] transition-all duration-300">
+                <div className="mr-4 bg-gradient-to-br from-subline-accent to-subline-accent/70 p-3 rounded-lg shadow-[0_0_10px_rgba(122,255,98,0.2)]">
+                  <FileText size={22} className="text-black" />
                 </div>
                 <div>
-                  <span className="font-medium text-white">Premium Headlines</span>
-                  <p className="text-sm text-gray-400">Focused on critical events that matter</p>
+                  <span className="font-semibold text-white text-lg">Premium Headlines</span>
+                  <p className="text-gray-400">Focused on critical events that matter to you</p>
                 </div>
-              </li>
-              <li className="flex items-start p-4 rounded-xl bg-gradient-card backdrop-blur-md border border-gray-800/30">
-                <div className="mr-3 bg-gradient-indigo-coral p-2 rounded-full">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                </div>
-                <div>
-                  <span className="font-medium text-white">Intelligent Search</span>
-                  <p className="text-sm text-gray-400">Find exactly what you need, when you need it</p>
-                </div>
-              </li>
-              <li className="flex items-start p-4 rounded-xl bg-gradient-card backdrop-blur-md border border-gray-800/30">
-                <div className="mr-3 bg-gradient-indigo-coral p-2 rounded-full">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+              </div>
+              
+              <div className="flex items-start p-5 rounded-xl bg-gray-900/30 backdrop-blur-sm border border-gray-800/50 shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:border-subline-accent/30 hover:shadow-[0_4px_20px_rgba(122,255,98,0.1)] transition-all duration-300">
+                <div className="mr-4 bg-gradient-to-br from-subline-accent to-subline-accent/70 p-3 rounded-lg shadow-[0_0_10px_rgba(122,255,98,0.2)]">
+                  <Search size={22} className="text-black" />
                 </div>
                 <div>
-                  <span className="font-medium text-white">Deep Context</span>
-                  <p className="text-sm text-gray-400">AI-powered analysis beyond the headlines</p>
+                  <span className="font-semibold text-white text-lg">Intelligent Search</span>
+                  <p className="text-gray-400">Find exactly what you need, when you need it</p>
                 </div>
-              </li>
-              <li className="flex items-start p-4 rounded-xl bg-gradient-card backdrop-blur-md border border-gray-800/30">
-                <div className="mr-3 bg-gradient-indigo-coral p-2 rounded-full">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+              </div>
+              
+              <div className="flex items-start p-5 rounded-xl bg-gray-900/30 backdrop-blur-sm border border-gray-800/50 shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:border-subline-accent/30 hover:shadow-[0_4px_20px_rgba(122,255,98,0.1)] transition-all duration-300">
+                <div className="mr-4 bg-gradient-to-br from-subline-accent to-subline-accent/70 p-3 rounded-lg shadow-[0_0_10px_rgba(122,255,98,0.2)]">
+                  <Layers size={22} className="text-black" />
                 </div>
                 <div>
-                  <span className="font-medium text-white">Instant Insights</span>
-                  <p className="text-sm text-gray-400">Get the full picture in seconds</p>
+                  <span className="font-semibold text-white text-lg">Deep Context</span>
+                  <p className="text-gray-400">AI-powered analysis beyond the headlines</p>
                 </div>
-              </li>
-            </ul>
+              </div>
+              
+              <div className="flex items-start p-5 rounded-xl bg-gray-900/30 backdrop-blur-sm border border-gray-800/50 shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:border-subline-accent/30 hover:shadow-[0_4px_20px_rgba(122,255,98,0.1)] transition-all duration-300">
+                <div className="mr-4 bg-gradient-to-br from-subline-accent to-subline-accent/70 p-3 rounded-lg shadow-[0_0_10px_rgba(122,255,98,0.2)]">
+                  <Zap size={22} className="text-black" />
+                </div>
+                <div>
+                  <span className="font-semibold text-white text-lg">Instant Insights</span>
+                  <p className="text-gray-400">Get the full picture in seconds</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </main>
       
-      <footer className="p-4 text-center text-sm text-gray-500 relative z-10">
-        <p>Base Batch India Hackathon Project</p>
+      <footer className="p-6 text-center text-sm text-gray-500 relative z-10 border-t border-gray-800/30">
+        <p>© 2024 Subline · Built on Base</p>
       </footer>
     </div>
   );

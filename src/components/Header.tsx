@@ -68,7 +68,7 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
   };
 
   return (
-    <header className="sticky top-0 z-30 w-full bg-black border-b border-gray-800">
+    <header className="sticky top-0 z-30 w-full bg-black border-b border-gray-800/50 shadow-md">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center space-x-1">
           <button onClick={() => navigate('/')} className="p-2">
@@ -93,7 +93,7 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
               <Button 
                 type="submit" 
                 size="sm"
-                className="rounded-l-none rounded-r-full bg-[#7aff62] text-black hover:bg-[#7aff62]/80 shadow-sm"
+                className="rounded-l-none rounded-r-full bg-[#7aff62] text-black hover:bg-[#7aff62]/80 shadow-[0_0_10px_rgba(122,255,98,0.15)]"
                 aria-label="Search"
               >
                 <Search size={16} className="mr-1" />
