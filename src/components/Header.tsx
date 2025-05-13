@@ -88,12 +88,12 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search news..."
-                className="w-full py-1.5 pl-3 pr-3 rounded-l-full border border-gray-600 bg-gray-900 text-sm focus:outline-none focus:ring-1 focus:ring-subline-accent shadow-sm"
+                className="w-full py-1.5 pl-3 pr-3 rounded-l-full border border-gray-600 bg-gray-900 text-sm focus:outline-none focus:ring-1 focus:ring-[#004eff] shadow-sm"
               />
               <Button 
                 type="submit" 
                 size="sm"
-                className="rounded-l-none rounded-r-full bg-[#7aff62] text-black hover:bg-[#7aff62]/80 shadow-[0_0_10px_rgba(122,255,98,0.15)]"
+                className="rounded-l-none rounded-r-full bg-[#004eff] text-black hover:bg-[#004eff]/80 shadow-[0_0_10px_rgba(0,78,255,0.15)]"
                 aria-label="Search"
               >
                 <Search size={16} className="mr-1" />
@@ -109,10 +109,10 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
               variant="outline"
               size="icon"
               onClick={toggleTheme}
-              className="mr-2 border-gray-600 bg-gray-900 hover:bg-gray-800 hover:border-[#7aff62]"
+              className="mr-2 border-gray-600 bg-gray-900 hover:bg-gray-800 hover:border-[#004eff]"
               aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             >
-              {theme === 'dark' ? <Sun size={18} className="text-[#7aff62]" /> : <Moon size={18} className="text-[#7aff62]" />}
+              {theme === 'dark' ? <Sun size={18} className="text-[#004eff]" /> : <Moon size={18} className="text-[#004eff]" />}
             </Button>
           )}
           <div className="rainbowkit-connect-button">

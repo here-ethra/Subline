@@ -44,19 +44,34 @@ const SearchPage = () => {
       setLoading(true);
       try {
         console.log("SearchPage: Calling searchNews API with query:", query);
+        
+        // Log the API call details before making the request
+        console.log("SearchPage: API call details:");
+        console.log("- API endpoint: /news");
+        console.log("- Search query:", query);
+        console.log("- Additional parameters: language=en, country=in");
+        
         const searchResults = await searchNews(query);
+        
+        console.log("SearchPage: Search API call completed");
         console.log("SearchPage: Search results received:", searchResults.length, "articles");
+        console.log("SearchPage: Search results data:", JSON.stringify(searchResults).substring(0, 200) + "...");
         
         if (searchResults.length === 0) {
           console.log("SearchPage: No results found for query:", query);
         } else {
           console.log("SearchPage: First result title:", searchResults[0]?.title);
+          console.log("SearchPage: First result source:", searchResults[0]?.source);
+          console.log("SearchPage: First result URL:", searchResults[0]?.url);
         }
         
         setResults(searchResults);
         setSearchPerformed(true);
       } catch (error) {
         console.error('SearchPage: Search failed:', error);
+        console.log("SearchPage: Error type:", typeof error);
+        console.log("SearchPage: Error message:", error instanceof Error ? error.message : String(error));
+        
         toast({
           title: 'Error',
           description: 'Failed to search for news. Please try again later.',
@@ -89,7 +104,7 @@ const SearchPage = () => {
         <Button
           variant="ghost"
           size="sm"
-          className="mb-4 hover:text-[#7aff62]"
+          className="mb-4 hover:text-[#004eff]"
           onClick={() => {
             console.log("SearchPage: Back to Headlines button clicked");
             navigate('/');
@@ -127,7 +142,7 @@ const SearchPage = () => {
                 </p>
                 <Button 
                   variant="outline" 
-                  className="mt-4 hover:text-[#7aff62] hover:border-[#7aff62]/50"
+                  className="mt-4 hover:text-[#004eff] hover:border-[#004eff]/50"
                   onClick={() => {
                     console.log("SearchPage: Return to Headlines button clicked");
                     navigate('/');

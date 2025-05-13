@@ -54,8 +54,8 @@ export default {
 					foreground: 'hsl(var(--card-foreground))'
 				},
 				subline: {
-					accent: '#7aff62',
-					accentLight: '#a8ff9c',
+					accent: '#004eff',
+					accentLight: '#3b7aff',
 					darkBg: '#000000',
 					darkCard: '#000000',
 					neutral: '#8E9196',
@@ -110,7 +110,7 @@ export default {
             },
             boxShadow: {
               'subline': '0 8px 16px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.1)',
-              'subline-hover': '0 4px 12px rgba(122, 255, 98, 0.15), 0 2px 4px rgba(122, 255, 98, 0.1)',
+              'subline-hover': '0 4px 12px rgba(0, 78, 255, 0.15), 0 2px 4px rgba(0, 78, 255, 0.1)',
             },
 		}
 	},

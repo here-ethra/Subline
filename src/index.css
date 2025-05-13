@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -16,7 +15,7 @@
     --popover: 0 0% 0%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 142 100% 69%;
+    --primary: 217 100% 50%;
     --primary-foreground: 0 0% 0%;
 
     --secondary: 0 0% 9%;
@@ -25,7 +24,7 @@
     --muted: 0 0% 9%;
     --muted-foreground: 240 5% 64.9%;
 
-    --accent: 142 100% 69%;
+    --accent: 217 100% 50%;
     --accent-foreground: 0 0% 0%;
 
     --destructive: 0 62.8% 30.6%;
@@ -33,7 +32,7 @@
 
     --border: 0 0% 9%;
     --input: 0 0% 9%;
-    --ring: 142 100% 69%;
+    --ring: 217 100% 50%;
 
     --radius: 0.5rem;
   }
@@ -132,7 +131,7 @@
 
 /* Button style overrides */
 .btn-accent {
-  @apply bg-[#7aff62] text-black hover:bg-[#7aff62]/90 transition-all duration-200;
+  @apply bg-[#004eff] text-black hover:bg-[#004eff]/90 transition-all duration-200;
 }
 
 /* Fix for react error with object types */
@@ -144,20 +143,20 @@ button {
 /* RainbowKit button overrides - UPDATED */
 .rainbowkit-connect-button button {
   background-color: transparent !important;
-  border: 1px solid #7aff62 !important;
+  border: 1px solid #004eff !important;
   border-radius: 8px !important;
   padding: 8px 16px !important;
   transition: all 0.2s ease-in-out !important;
-  box-shadow: 0 0 12px rgba(122, 255, 98, 0.1) !important;
+  box-shadow: 0 0 12px rgba(0, 78, 255, 0.1) !important;
 }
 
 .rainbowkit-connect-button button:hover {
-  background-color: #7aff62 !important;
-  border-color: #7aff62 !important;
+  background-color: #004eff !important;
+  border-color: #004eff !important;
 }
 
 .rainbowkit-connect-button button > div {
-  color: #7aff62 !important;
+  color: #004eff !important;
   font-weight: 500 !important;
 }
 
@@ -165,11 +164,9 @@ button {
   color: #000 !important;
 }
 
-/* Connected wallet button */
+/* Connected wallet button - REMOVING CUSTOM STYLING */
 .rainbowkit-connect-button [data-testid="connected-wallet-modal"] {
-  border: 1px solid #7aff62 !important;
-  background-color: rgba(0, 0, 0, 0.8) !important;
-  box-shadow: 0 0 12px rgba(122, 255, 98, 0.1) !important;
+  /* Removing custom styles for connected wallet button as requested */
 }
 
 /* RainbowKit modal fixes */
@@ -181,11 +178,11 @@ button {
   background-color: #0a0a0a !important;
   border: 1px solid #333 !important;
   color: white !important;
-  box-shadow: 0 8px 32px rgba(122, 255, 98, 0.08) !important;
+  box-shadow: 0 8px 32px rgba(0, 78, 255, 0.08) !important;
 }
 
 [data-rk] [data-rk-wallet-option]:hover {
-  background-color: rgba(122, 255, 98, 0.1) !important;
+  background-color: rgba(0, 78, 255, 0.1) !important;
 }
 
 [data-rk] [data-rk-wallet-option-name] {

@@ -1,3 +1,4 @@
+
 import OpenAI from "openai";
 
 // News API configuration
@@ -200,14 +201,26 @@ export async function searchNews(query: string, country = 'in'): Promise<NewsArt
       language: 'en'
     });
     
-    console.log(`API: Calling NewsData.io search endpoint: ${endpoint}?${params.toString()}`);
+    const fullUrl = `${endpoint}?${params.toString()}`;
+    console.log(`API: Calling NewsData.io search endpoint: ${fullUrl}`);
     
-    const response = await fetch(`${endpoint}?${params.toString()}`, {
+    // Debug the request we're about to make
+    console.log("API: Request details:");
+    console.log("- Full URL:", fullUrl);
+    console.log("- Headers: no-cache, Expires: 0");
+    
+    const response = await fetch(fullUrl, {
       headers: {
         'Pragma': 'no-cache',
-        'Expires': '0'
+        'Expires': '0',
+        'Cache-Control': 'no-cache'
       }
     });
+    
+    console.log("API: Response received from API");
+    console.log("API: Response status:", response.status);
+    console.log("API: Response status text:", response.statusText);
+    console.log("API: Response headers:", JSON.stringify(Object.fromEntries([...response.headers])));
     
     if (!response.ok) {
       const errorText = await response.text();
@@ -216,8 +229,10 @@ export async function searchNews(query: string, country = 'in'): Promise<NewsArt
     }
     
     const data = await response.json();
+    console.log("API: NewsData.io search response parsed");
     console.log("API: NewsData.io search response status:", data.status);
     console.log("API: Search total results:", data.totalResults || 0);
+    console.log("API: Raw response data first 200 chars:", JSON.stringify(data).substring(0, 200) + "...");
     
     if (data.status !== "success") {
       console.error("API: Unexpected search response format:", data);
@@ -242,6 +257,9 @@ export async function searchNews(query: string, country = 'in'): Promise<NewsArt
     return searchResults;
   } catch (error) {
     console.error('Error searching news:', error);
+    console.log("API: Error type:", typeof error);
+    console.log("API: Error message:", error instanceof Error ? error.message : String(error));
+    console.log("API: Error stack:", error instanceof Error ? error.stack : "No stack trace");
     console.log("API: Returning empty array due to error");
     console.log("========================");
     return [];

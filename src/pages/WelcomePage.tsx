@@ -24,18 +24,18 @@ const WelcomePage = () => {
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden bg-black">
       {/* Background gradients */}
-      <div className="absolute inset-0 bg-gradient-to-br from-subline-accent/5 via-transparent to-subline-accent/5 z-0 pointer-events-none"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(122,255,98,0.03),transparent_70%)] z-0 pointer-events-none"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-[#004eff]/5 via-transparent to-[#004eff]/5 z-0 pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,78,255,0.03),transparent_70%)] z-0 pointer-events-none"></div>
       
       {/* Noise texture overlay */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1Ii8+PC9zdmc+')] opacity-40 z-0 pointer-events-none"></div>
       
       <header className="p-4 flex justify-between items-center relative z-10 border-b border-gray-800/30">
-        <div>
+        <div className="flex-1">
           <img
             src="/subline.png"
             alt="Subline Logo"
-            className="h-8 w-auto"
+            className="h-8 w-auto mx-auto"
           />
         </div>
         <div className="rainbowkit-connect-button">
@@ -51,7 +51,7 @@ const WelcomePage = () => {
               <img src="/subline.png" alt="Subline logo" className="inline-block" />
             </div>
             
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-subline-accent via-subline-accent/90 to-subline-accent/70 bg-clip-text text-transparent px-4">
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-[#004eff] via-[#004eff]/90 to-[#004eff]/70 bg-clip-text text-transparent px-4">
               Discover the Stories Behind the Headlines
             </h2>
             
@@ -64,7 +64,7 @@ const WelcomePage = () => {
           <div className="space-y-5">
             <div className="flex justify-center p-4">
               <Button 
-                className="py-6 px-8 text-lg font-medium border border-subline-accent/50 bg-black text-subline-accent hover:bg-subline-accent hover:text-black shadow-[0_0_15px_rgba(122,255,98,0.15)] transition-all duration-300 rounded-xl"
+                className="py-6 px-8 text-lg font-medium border border-[#004eff]/50 bg-black text-[#004eff] hover:bg-[#004eff] hover:text-black shadow-[0_0_15px_rgba(0,78,255,0.15)] transition-all duration-300 rounded-xl"
                 onClick={() => document.querySelector<HTMLElement>('.rainbowkit-connect-button button')?.click()}
               >
                 Connect Wallet to Continue
@@ -77,13 +77,13 @@ const WelcomePage = () => {
           
           {/* Features */}
           <div className="pt-8 space-y-8">
-            <h3 className="text-2xl font-medium bg-gradient-to-r from-subline-accent to-subline-accent/80 bg-clip-text text-transparent">
+            <h3 className="text-2xl font-medium bg-gradient-to-r from-[#004eff] to-[#004eff]/80 bg-clip-text text-transparent">
               Premium Features
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-              <div className="flex items-start p-5 rounded-xl bg-gray-900/30 backdrop-blur-sm border border-gray-800/50 shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:border-subline-accent/30 hover:shadow-[0_4px_20px_rgba(122,255,98,0.1)] transition-all duration-300">
-                <div className="mr-4 bg-gradient-to-br from-subline-accent to-subline-accent/70 p-3 rounded-lg shadow-[0_0_10px_rgba(122,255,98,0.2)]">
+              <div className="flex items-start p-5 rounded-xl bg-gray-900/30 backdrop-blur-sm border border-gray-800/50 shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:border-[#004eff]/30 hover:shadow-[0_4px_20px_rgba(0,78,255,0.1)] transition-all duration-300">
+                <div className="mr-4 bg-gradient-to-br from-[#004eff] to-[#004eff]/70 p-3 rounded-lg shadow-[0_0_10px_rgba(0,78,255,0.2)]">
                   <FileText size={22} className="text-black" />
                 </div>
                 <div>
@@ -92,8 +92,8 @@ const WelcomePage = () => {
                 </div>
               </div>
               
-              <div className="flex items-start p-5 rounded-xl bg-gray-900/30 backdrop-blur-sm border border-gray-800/50 shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:border-subline-accent/30 hover:shadow-[0_4px_20px_rgba(122,255,98,0.1)] transition-all duration-300">
-                <div className="mr-4 bg-gradient-to-br from-subline-accent to-subline-accent/70 p-3 rounded-lg shadow-[0_0_10px_rgba(122,255,98,0.2)]">
+              <div className="flex items-start p-5 rounded-xl bg-gray-900/30 backdrop-blur-sm border border-gray-800/50 shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:border-[#004eff]/30 hover:shadow-[0_4px_20px_rgba(0,78,255,0.1)] transition-all duration-300">
+                <div className="mr-4 bg-gradient-to-br from-[#004eff] to-[#004eff]/70 p-3 rounded-lg shadow-[0_0_10px_rgba(0,78,255,0.2)]">
                   <Search size={22} className="text-black" />
                 </div>
                 <div>
@@ -102,8 +102,8 @@ const WelcomePage = () => {
                 </div>
               </div>
               
-              <div className="flex items-start p-5 rounded-xl bg-gray-900/30 backdrop-blur-sm border border-gray-800/50 shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:border-subline-accent/30 hover:shadow-[0_4px_20px_rgba(122,255,98,0.1)] transition-all duration-300">
-                <div className="mr-4 bg-gradient-to-br from-subline-accent to-subline-accent/70 p-3 rounded-lg shadow-[0_0_10px_rgba(122,255,98,0.2)]">
+              <div className="flex items-start p-5 rounded-xl bg-gray-900/30 backdrop-blur-sm border border-gray-800/50 shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:border-[#004eff]/30 hover:shadow-[0_4px_20px_rgba(0,78,255,0.1)] transition-all duration-300">
+                <div className="mr-4 bg-gradient-to-br from-[#004eff] to-[#004eff]/70 p-3 rounded-lg shadow-[0_0_10px_rgba(0,78,255,0.2)]">
                   <Layers size={22} className="text-black" />
                 </div>
                 <div>
@@ -112,8 +112,8 @@ const WelcomePage = () => {
                 </div>
               </div>
               
-              <div className="flex items-start p-5 rounded-xl bg-gray-900/30 backdrop-blur-sm border border-gray-800/50 shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:border-subline-accent/30 hover:shadow-[0_4px_20px_rgba(122,255,98,0.1)] transition-all duration-300">
-                <div className="mr-4 bg-gradient-to-br from-subline-accent to-subline-accent/70 p-3 rounded-lg shadow-[0_0_10px_rgba(122,255,98,0.2)]">
+              <div className="flex items-start p-5 rounded-xl bg-gray-900/30 backdrop-blur-sm border border-gray-800/50 shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:border-[#004eff]/30 hover:shadow-[0_4px_20px_rgba(0,78,255,0.1)] transition-all duration-300">
+                <div className="mr-4 bg-gradient-to-br from-[#004eff] to-[#004eff]/70 p-3 rounded-lg shadow-[0_0_10px_rgba(0,78,255,0.2)]">
                   <Zap size={22} className="text-black" />
                 </div>
                 <div>
