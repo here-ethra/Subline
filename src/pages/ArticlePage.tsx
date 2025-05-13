@@ -25,11 +25,6 @@ const ArticlePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  // Scroll to top when the page loads
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-  
   useEffect(() => {
     // If we don't have the article in the state, we would normally fetch it
     // For demo purposes, creating a mock article if not provided

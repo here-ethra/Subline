@@ -1,12 +1,13 @@
 
 import { useState, useEffect } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Search } from 'lucide-react';
+import { Search, Moon, Sun, Wallet } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { useAccount } from 'wagmi';
+import { useAccount, useEnsName } from 'wagmi';
 import { useTheme } from 'next-themes';
 import { useSmartAccount } from '@/hooks/useSmartAccount';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface HeaderProps {
   onSearch?: (query: string) => void;
@@ -18,16 +19,15 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
   const [mounted, setMounted] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { isConnected } = useAccount();
-  const { setTheme } = useTheme();
+  const { isConnected, address } = useAccount();
+  const { data: ensName } = useEnsName({ address });
+  const { theme, setTheme } = useTheme();
   const { smartAccountAddress, isReady } = useSmartAccount();
   
   // After mounted, we can show the theme toggle (to avoid hydration mismatch)
   useEffect(() => {
     setMounted(true);
-    // Set theme to dark by default
-    setTheme('dark');
-  }, [setTheme]);
+  }, []);
   
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,6 +65,10 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
       console.log("Header: Empty query, search not performed");
     }
     console.log("========================");
+  };
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
   const shortenAddress = (address: string | null) => {
@@ -108,11 +112,37 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
           )}
         </div>
 
-        <div className="flex items-center">
+        <div className="flex items-center space-x-2">
+          {mounted && (
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={toggleTheme}
+              className="mr-2 border-gray-600 bg-gray-900 hover:bg-gray-800 hover:border-[#85FF00]"
+              aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {theme === 'dark' ? <Sun size={18} className="text-[#85FF00]" /> : <Moon size={18} className="text-[#85FF00]" />}
+            </Button>
+          )}
+          
           {isConnected && isReady && smartAccountAddress && (
-            <div className="mr-2 text-sm text-gray-300">
-              {shortenAddress(smartAccountAddress)}
-            </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="mr-2 border-gray-600 bg-gray-900 hover:bg-gray-800 hover:border-[#85FF00]"
+                  >
+                    <Wallet size={14} className="mr-1 text-[#85FF00]" />
+                    <span className="text-xs">{shortenAddress(smartAccountAddress)}</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Smart Account: {smartAccountAddress}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
           
           <div className="rainbowkit-connect-button">

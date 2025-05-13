@@ -4,8 +4,6 @@
 @tailwind utilities;
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -48,14 +46,6 @@
     @apply bg-black text-foreground;
     font-family: 'Inter', sans-serif;
     -webkit-tap-highlight-color: transparent;
-  }
-  
-  h1, h2, h3 {
-    font-family: 'Space Grotesk', sans-serif;
-  }
-  
-  h4, h5, h6 {
-    font-family: 'Sora', sans-serif;
   }
 }
 
@@ -151,7 +141,7 @@ button {
   cursor: pointer;
 }
 
-/* RainbowKit button overrides */
+/* RainbowKit button overrides - UPDATED */
 .rainbowkit-connect-button button {
   background-color: transparent !important;
   border: 1px solid #004eff !important;
@@ -173,6 +163,12 @@ button {
 
 .rainbowkit-connect-button button:hover > div {
   color: #000 !important;
+}
+
+/* Removing connected wallet custom styling */
+/* Connected wallet button - UPDATED */
+.rainbowkit-connect-button [data-testid="connected-wallet-modal"] {
+  /* All custom styles removed for connected wallet button as requested */
 }
 
 /* RainbowKit modal fixes */

@@ -1,8 +1,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAccount } from 'wagmi';
-import type { Address } from 'viem';
-import { createSmartAccount, sendTip as sendTipWithSmartAccount, parseEther, type SmartAccountClient } from '@/lib/rainbowKit';
+import type { Address } from 'wagmi';
+import { createSmartAccount, sendTip as sendTipWithSmartAccount, parseEther } from '@/lib/rainbowKit';
 import { toast } from '@/components/ui/sonner';
 
 interface SmartAccountState {
@@ -10,7 +10,7 @@ interface SmartAccountState {
   isCreating: boolean;
   isReady: boolean;
   error: string | null;
-  smartAccountClient: SmartAccountClient | null;
+  smartAccountClient: any | null;
 }
 
 export function useSmartAccount() {
@@ -35,7 +35,7 @@ export function useSmartAccount() {
         setState(prev => ({ ...prev, isCreating: true, error: null }));
         
         console.log("Initializing smart account for address:", address);
-        const smartAccountClient = await createSmartAccount(address as Address);
+        const smartAccountClient = await createSmartAccount(address as Address, null);
         
         if (!smartAccountClient?.account?.address) {
           throw new Error("Failed to create smart account: No address returned");
@@ -84,7 +84,7 @@ export function useSmartAccount() {
         {
           loading: `Sending ${amount} ETH to ${toAddress}...`,
           success: (txHash) => {
-            return `Tip sent successfully! TX: ${typeof txHash === 'string' ? txHash.slice(0, 10) : ''}...`;
+            return `Tip sent successfully! TX: ${txHash.slice(0, 10)}...`;
           },
           error: (error) => {
             return error instanceof Error ? error.message : "Unknown error sending tip";

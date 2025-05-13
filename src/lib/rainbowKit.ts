@@ -3,27 +3,26 @@ import '@rainbow-me/rainbowkit/styles.css';
 
 import { 
   getDefaultWallets,
-  RainbowKitProvider,
-  connectorsForWallets
+  RainbowKitProvider 
 } from '@rainbow-me/rainbowkit';
 import { 
   http, 
   createConfig, 
   createStorage,
+  type Address
 } from 'wagmi';
 import { base } from 'wagmi/chains';
-import type { Address } from 'viem';
 import { 
   createAlchemySmartAccountClient, 
-  type AlchemyProvider
+  AlchemyProvider,
+  type SmartAccountSigner
 } from "@alchemy/aa-alchemy";
 import { createMultiOwnerModularAccount } from "@alchemy/aa-accounts";
 import { 
-  type SmartAccountSigner,
+  LocalAccountSigner,
   type SmartContractAccount
 } from "@alchemy/aa-core";
 import { parseEther, formatUnits } from 'viem';
-import { coinbaseWallet } from '@rainbow-me/rainbowkit/wallets';
 
 // Using Base mainnet for production
 const projectId = 'YOUR_WALLETCONNECT_PROJECT_ID'; // Replace with actual project ID in production
@@ -31,25 +30,10 @@ const projectId = 'YOUR_WALLETCONNECT_PROJECT_ID'; // Replace with actual projec
 // Alchemy API Key for Base
 const alchemyApiKey = 'demo'; // Replace with actual Alchemy API key in production
 
-// Use only Coinbase Wallet (remove other wallets)
-const { wallets } = getDefaultWallets({
-  appName: 'Subline News App',
+const { connectors } = getDefaultWallets({
+  appName: 'Context News App',
   projectId,
 });
-
-// Fix the coinbaseWallet configuration to match the expected API
-// The API requires projectId as the second argument
-const connectors = connectorsForWallets([
-  {
-    groupName: 'Recommended',
-    wallets: [
-      coinbaseWallet({ 
-        appName: 'Subline News App',
-        projectId: projectId
-      })
-    ],
-  },
-]);
 
 export const wagmiConfig = createConfig({
   chains: [base],
@@ -60,17 +44,8 @@ export const wagmiConfig = createConfig({
   storage: createStorage({ storage: window.localStorage }),
 });
 
-// Define a proper return type for createSmartAccount that includes sendTransaction
-export interface SmartAccountClient {
-  account: {
-    address: string;
-  };
-  sendTransaction: (tx: { to: Address; value: bigint; data: string }) => Promise<string>;
-  [key: string]: any;
-}
-
 // Smart account factory function
-export async function createSmartAccount(ownerAddress: Address, provider?: any): Promise<SmartAccountClient> {
+export async function createSmartAccount(ownerAddress: Address, provider: any) {
   try {
     console.log("Creating smart account for:", ownerAddress);
     
@@ -80,11 +55,11 @@ export async function createSmartAccount(ownerAddress: Address, provider?: any):
       address: ownerAddress, 
       signMessage: async () => {
         console.log("Smart account attempting to sign message");
-        return "0x" as `0x${string}`; // This is a mock signature for gasless transactions
+        return "0x"; // This is a mock signature for gasless transactions
       },
       signTransaction: async () => {
         console.log("Smart account attempting to sign transaction");
-        return "0x" as `0x${string}`; // This is a mock signature for gasless transactions
+        return "0x"; // This is a mock signature for gasless transactions
       },
     } as unknown as SmartAccountSigner;
 
@@ -100,12 +75,12 @@ export async function createSmartAccount(ownerAddress: Address, provider?: any):
         owner,
         chain: base,
         entryPoint: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789" as Address, // Base entry point
-        factoryAddress: "0x91E60e0613810449d098b0b5Ec8b51A0FE8c8985" as Address, // Standard factory
+        factoryAddress: "0x91E60e0613810449d098b0b5Ec8b51A0FE8c8985", // Standard factory
       }),
     });
     
     console.log("Smart account created:", smartAccountClient.account?.address);
-    return smartAccountClient as SmartAccountClient;
+    return smartAccountClient;
   } catch (error) {
     console.error("Error creating smart account:", error);
     throw error;
@@ -113,11 +88,7 @@ export async function createSmartAccount(ownerAddress: Address, provider?: any):
 }
 
 // Function to send tip using smart account (gasless)
-export async function sendTip(
-  toAddress: Address, 
-  amount: bigint, 
-  smartAccountClient: SmartAccountClient
-): Promise<string> {
+export async function sendTip(toAddress: Address, amount: bigint, smartAccountClient: any) {
   try {
     console.log(`Sending tip: ${formatUnits(amount, 18)} ETH to ${toAddress}`);
 
