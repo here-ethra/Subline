@@ -9,15 +9,14 @@ import {
   http, 
   createConfig, 
   createStorage,
-  Address,
-  PublicClient,
-  formatEther
+  type Address,
+  formatUnits
 } from 'wagmi';
 import { base } from 'wagmi/chains';
 import { 
   createAlchemySmartAccountClient, 
   AlchemyProvider,
-  SmartAccountSigner
+  type SmartAccountSigner
 } from "@alchemy/aa-alchemy";
 import { createMultiOwnerModularAccount } from "@alchemy/aa-accounts";
 import { 
@@ -46,7 +45,7 @@ export const wagmiConfig = createConfig({
 });
 
 // Smart account factory function
-export async function createSmartAccount(ownerAddress: Address, provider: PublicClient) {
+export async function createSmartAccount(ownerAddress: Address, provider: any) {
   try {
     console.log("Creating smart account for:", ownerAddress);
     
@@ -75,7 +74,7 @@ export async function createSmartAccount(ownerAddress: Address, provider: Public
       account: await createMultiOwnerModularAccount({
         owner,
         chain: base,
-        entryPoint: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789", // Base entry point
+        entryPoint: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789" as any, // Base entry point
         factoryAddress: "0x91E60e0613810449d098b0b5Ec8b51A0FE8c8985", // Standard factory
       }),
     });
@@ -91,7 +90,7 @@ export async function createSmartAccount(ownerAddress: Address, provider: Public
 // Function to send tip using smart account (gasless)
 export async function sendTip(toAddress: Address, amount: bigint, smartAccountClient: any) {
   try {
-    console.log(`Sending tip: ${formatEther(amount)} ETH to ${toAddress}`);
+    console.log(`Sending tip: ${formatUnits(amount, 18)} ETH to ${toAddress}`);
 
     // Prepare the transaction
     const hash = await smartAccountClient.sendTransaction({

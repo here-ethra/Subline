@@ -23,11 +23,7 @@ export default function TipForm({ recipientAddress = '', onSuccess }: TipFormPro
     e.preventDefault();
     
     if (!address || !amount) {
-      toast({
-        title: "Error",
-        description: "Please provide both address and amount",
-        variant: "destructive"
-      });
+      toast.error("Please provide both address and amount");
       return;
     }
     
@@ -40,11 +36,7 @@ export default function TipForm({ recipientAddress = '', onSuccess }: TipFormPro
       }
     } catch (error) {
       console.error("Error sending tip:", error);
-      toast({
-        title: "Transaction Failed",
-        description: error instanceof Error ? error.message : "Failed to send tip",
-        variant: "destructive"
-      });
+      toast.error(error instanceof Error ? error.message : "Failed to send tip");
     } finally {
       setIsSubmitting(false);
     }

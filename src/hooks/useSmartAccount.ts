@@ -1,7 +1,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAccount } from 'wagmi';
-import { Address, parseEther } from 'viem';
+import type { Address } from 'wagmi';
+import { parseEther } from 'viem';
 import { createSmartAccount, sendTip as sendTipWithSmartAccount } from '@/lib/rainbowKit';
 import { toast } from '@/components/ui/sonner';
 
@@ -68,21 +69,29 @@ export function useSmartAccount() {
   // Function to send a tip using the smart account
   const sendTip = useCallback(async (toAddress: string, amount: string) => {
     if (!state.isReady || !state.smartAccountClient) {
-      toast({
-        title: "Smart account not ready",
-        description: "Please wait for your smart account to be initialized",
-        variant: "destructive"
-      });
+      toast.error("Smart account not ready. Please wait for your smart account to be initialized.");
       return null;
     }
 
     try {
       const amountInWei = parseEther(amount);
       
-      toast({
-        title: "Sending tip...",
-        description: `Sending ${amount} ETH to ${toAddress}`,
-      });
+      toast.promise(
+        sendTipWithSmartAccount(
+          toAddress as Address, 
+          amountInWei, 
+          state.smartAccountClient
+        ),
+        {
+          loading: `Sending ${amount} ETH to ${toAddress}...`,
+          success: (txHash) => {
+            return `Tip sent successfully! TX: ${txHash.slice(0, 10)}...`;
+          },
+          error: (error) => {
+            return error instanceof Error ? error.message : "Unknown error sending tip";
+          }
+        }
+      );
       
       const txHash = await sendTipWithSmartAccount(
         toAddress as Address, 
@@ -90,22 +99,10 @@ export function useSmartAccount() {
         state.smartAccountClient
       );
       
-      toast({
-        title: "Tip sent successfully",
-        description: `Transaction hash: ${txHash.slice(0, 10)}...`,
-        variant: "success",
-      });
-      
       return txHash;
     } catch (error) {
       console.error("Error sending tip:", error);
-      
-      toast({
-        title: "Error sending tip",
-        description: error instanceof Error ? error.message : "Unknown error",
-        variant: "destructive",
-      });
-      
+      toast.error(error instanceof Error ? error.message : "Unknown error sending tip");
       return null;
     }
   }, [state.isReady, state.smartAccountClient]);
