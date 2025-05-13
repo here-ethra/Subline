@@ -24,7 +24,11 @@ const WelcomePage = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-subline-indigo/5 to-subline-coral/5 z-0 pointer-events-none"></div>
       
       <header className="p-4 flex justify-between items-center relative z-10">
-        <h1 className="text-xl font-bold text-gradient">Subline</h1>
+        <img
+          src="/subline.png"
+          alt="Subline Logo"
+          className="h-8 w-auto"
+        />
       </header>
       
       <main className="flex-1 flex flex-col items-center justify-center p-6 text-center relative z-10">
