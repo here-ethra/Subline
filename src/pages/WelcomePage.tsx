@@ -52,7 +52,7 @@ const WelcomePage = () => {
             </h2>
             
             <p className="mt-4 text-lg text-gray-300 max-w-xl mx-auto">
-              Access premium insights with context that matters, delivered in a sleek, modern experience built on Base.
+              Access detailed insights with context that matters, delivered in a sleek, modern experience built on Base.
             </p>
           </div>
           
@@ -70,14 +70,14 @@ const WelcomePage = () => {
               </Button>
             </div>
             <p className="text-sm text-gray-400">
-              Connect your wallet on Base to access premium features
+              Connect your wallet on Base to access the app.
             </p>
           </div>
           
           {/* Features */}
           <div className="pt-8 space-y-8">
             <h3 className="text-2xl font-medium bg-gradient-to-r from-[#85FF00] to-[#85FF00]/80 bg-clip-text text-transparent">
-              Premium Features
+              Features
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
@@ -86,7 +86,7 @@ const WelcomePage = () => {
                   <FileText size={22} className="text-black" />
                 </div>
                 <div>
-                  <span className="font-semibold text-white text-lg">Premium Headlines</span>
+                  <span className="font-semibold text-white text-lg">Headlines</span>
                   <p className="text-gray-400">Focused on critical events that matter to you</p>
                 </div>
               </div>
