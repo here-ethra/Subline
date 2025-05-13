@@ -1,4 +1,3 @@
-
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
 import { useNavigate } from 'react-router-dom';
@@ -32,6 +31,9 @@ const WelcomePage = () => {
       
       <header className="p-4 flex justify-between items-center relative z-10 border-b border-gray-800/30">
         <div>
+          <img src="/subline.png" alt="Subline logo" className="h-8 w-auto" />
+        </div>
+        <div>
           <ConnectButton showBalance={false} />
         </div>
       </header>
@@ -58,7 +60,10 @@ const WelcomePage = () => {
             <div className="flex justify-center p-4">
               <Button 
                 className="py-6 px-8 text-lg font-medium border border-[#004eff]/50 bg-black text-[#004eff] hover:bg-[#004eff] hover:text-black shadow-[0_0_15px_rgba(0,78,255,0.15)] transition-all duration-300 rounded-xl"
-                onClick={() => document.querySelector('button[data-testid="rk-connect-button"]')?.click()}
+                onClick={() => {
+                  const connectButton = document.querySelector('[data-testid="rk-connect-button"]') as HTMLButtonElement;
+                  if (connectButton) connectButton.click();
+                }}
               >
                 Connect Wallet to Continue
               </Button>
