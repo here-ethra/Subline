@@ -2,16 +2,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAccount } from 'wagmi';
 import type { Address } from 'viem';
-import { createSmartAccount, sendTip as sendTipWithSmartAccount, parseEther } from '@/lib/rainbowKit';
+import { createSmartAccount, sendTip as sendTipWithSmartAccount, parseEther, type SmartAccountClient } from '@/lib/rainbowKit';
 import { toast } from '@/components/ui/sonner';
-
-// Define a proper type for the smart account client
-type SmartAccountClient = {
-  account: {
-    address: string;
-  };
-  [key: string]: any;
-};
 
 interface SmartAccountState {
   smartAccountAddress: string | null;

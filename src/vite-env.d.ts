@@ -3,7 +3,7 @@
 
 declare module "@alchemy/aa-alchemy" {
   import { type Chain } from "wagmi";
-  import { type Address } from "viem";
+  import type { Address } from "viem";
   
   export type AlchemyProvider = any;
   
@@ -22,7 +22,7 @@ declare module "@alchemy/aa-alchemy" {
 
 declare module "@alchemy/aa-accounts" {
   import { type Chain } from "wagmi";
-  import { type Address } from "viem";
+  import type { Address } from "viem";
   
   export interface MultiOwnerModularAccountConfig {
     owner: any;

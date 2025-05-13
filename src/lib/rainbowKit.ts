@@ -10,9 +10,9 @@ import {
   http, 
   createConfig, 
   createStorage,
-  type Address
 } from 'wagmi';
 import { base } from 'wagmi/chains';
+import type { Address } from 'viem';
 import { 
   createAlchemySmartAccountClient, 
   type AlchemyProvider
@@ -41,7 +41,7 @@ const connectors = connectorsForWallets([
   {
     groupName: 'Recommended',
     wallets: [
-      coinbaseWallet({ projectId, chains: [base] })
+      coinbaseWallet({ chains: [base] })
     ],
   },
 ]);
@@ -55,14 +55,14 @@ export const wagmiConfig = createConfig({
   storage: createStorage({ storage: window.localStorage }),
 });
 
-// Define a proper return type for createSmartAccount
-type SmartAccountClient = {
+// Define a proper return type for createSmartAccount that includes sendTransaction
+export interface SmartAccountClient {
   account: {
     address: string;
   };
   sendTransaction: (tx: { to: Address; value: bigint; data: string }) => Promise<string>;
   [key: string]: any;
-};
+}
 
 // Smart account factory function
 export async function createSmartAccount(ownerAddress: Address, provider?: any): Promise<SmartAccountClient> {
