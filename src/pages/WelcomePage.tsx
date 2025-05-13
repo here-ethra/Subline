@@ -31,13 +31,6 @@ const WelcomePage = () => {
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1Ii8+PC9zdmc+')] opacity-40 z-0 pointer-events-none"></div>
       
       <header className="p-4 flex justify-between items-center relative z-10 border-b border-gray-800/30">
-        <div className="flex-1">
-          <img
-            src="/subline.png"
-            alt="Subline Logo"
-            className="h-8 w-auto mx-auto"
-          />
-        </div>
         <div className="rainbowkit-connect-button">
           <ConnectButton showBalance={false} />
         </div>
