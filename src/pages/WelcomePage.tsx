@@ -47,7 +47,9 @@ const WelcomePage = () => {
         <div className="max-w-3xl w-full space-y-12 animate-fade-in">
           {/* Hero section */}
           <div className="space-y-6 pt-8">
-            <img src="/subline.png" alt="Subline" className="w-16 h-16 object-contain" />
+            <div className="pt-8 text-center">
+              <img src="/subline.png" alt="Subline logo" className="inline-block" />
+            </div>
             
             <h2 className="text-3xl font-bold bg-gradient-to-r from-subline-accent via-subline-accent/90 to-subline-accent/70 bg-clip-text text-transparent px-4">
               Discover the Stories Behind the Headlines
