@@ -7,6 +7,9 @@ import { fetchTopHeadlines, detectUserCountry, NewsArticle } from '@/lib/api';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Send } from 'lucide-react';
+import { useSmartAccount } from '@/hooks/useSmartAccount';
 
 const HomePage = () => {
   const [headlines, setHeadlines] = useState<NewsArticle[]>([]);
@@ -16,6 +19,7 @@ const HomePage = () => {
   const { data: ensName } = useEnsName({ address });
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { smartAccountAddress } = useSmartAccount();
   
   useEffect(() => {
     const loadHeadlines = async () => {
@@ -57,10 +61,41 @@ const HomePage = () => {
             Top Headlines
             {country && <span className="text-sm font-normal text-gray-500 ml-2">({country.toUpperCase()})</span>}
           </h1>
-          <div className="text-sm text-gray-400">
-            {ensName || address?.substring(0, 6) + '...' + address?.substring(address.length - 4)}
+          <div className="flex items-center space-x-4">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => navigate('/tip')}
+              className="flex items-center border-[#85FF00]/30 hover:border-[#85FF00] text-[#85FF00] hover:bg-[#85FF00]/10"
+            >
+              <Send size={14} className="mr-2" />
+              Try Gasless Tipping
+            </Button>
+            <div className="text-sm text-gray-400">
+              {ensName || address?.substring(0, 6) + '...' + address?.substring(address.length - 4)}
+            </div>
           </div>
         </div>
+        
+        {smartAccountAddress && (
+          <div className="mb-6 p-4 border border-[#85FF00]/20 bg-[#85FF00]/5 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-[#85FF00]">Smart Account Ready!</h2>
+                <p className="text-sm text-gray-400">
+                  Your smart account is ready for gasless transactions
+                </p>
+              </div>
+              <Button
+                onClick={() => navigate('/tip')}
+                size="sm"
+                className="bg-[#85FF00] text-black hover:bg-[#85FF00]/80"
+              >
+                Send Tip
+              </Button>
+            </div>
+          </div>
+        )}
         
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

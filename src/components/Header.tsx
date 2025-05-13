@@ -1,11 +1,13 @@
 
 import { useState, useEffect } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Search, Moon, Sun } from 'lucide-react';
+import { Search, Moon, Sun, Wallet } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { useAccount } from 'wagmi';
+import { useAccount, useEnsName } from 'wagmi';
 import { useTheme } from 'next-themes';
+import { useSmartAccount } from '@/hooks/useSmartAccount';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface HeaderProps {
   onSearch?: (query: string) => void;
@@ -17,8 +19,10 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
   const [mounted, setMounted] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
+  const { data: ensName } = useEnsName({ address });
   const { theme, setTheme } = useTheme();
+  const { smartAccountAddress, isReady } = useSmartAccount();
   
   // After mounted, we can show the theme toggle (to avoid hydration mismatch)
   useEffect(() => {
@@ -67,6 +71,11 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
+  const shortenAddress = (address: string | null) => {
+    if (!address) return '';
+    return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+  };
+
   return (
     <header className="sticky top-0 z-30 w-full bg-black border-b border-gray-800/50 shadow-md">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
@@ -88,12 +97,12 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search news..."
-                className="w-full py-1.5 pl-3 pr-3 rounded-l-full border border-gray-600 bg-gray-900 text-sm focus:outline-none focus:ring-1 focus:ring-[#004eff] shadow-sm"
+                className="w-full py-1.5 pl-3 pr-3 rounded-l-full border border-gray-600 bg-gray-900 text-sm focus:outline-none focus:ring-1 focus:ring-[#85FF00] shadow-sm"
               />
               <Button 
                 type="submit" 
                 size="sm"
-                className="rounded-l-none rounded-r-full bg-[#004eff] text-black hover:bg-[#004eff]/80 shadow-[0_0_10px_rgba(0,78,255,0.15)]"
+                className="rounded-l-none rounded-r-full bg-[#85FF00] text-black hover:bg-[#85FF00]/80 shadow-[0_0_10px_rgba(133,255,0,0.15)]"
                 aria-label="Search"
               >
                 <Search size={16} className="mr-1" />
@@ -109,12 +118,33 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
               variant="outline"
               size="icon"
               onClick={toggleTheme}
-              className="mr-2 border-gray-600 bg-gray-900 hover:bg-gray-800 hover:border-[#004eff]"
+              className="mr-2 border-gray-600 bg-gray-900 hover:bg-gray-800 hover:border-[#85FF00]"
               aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             >
-              {theme === 'dark' ? <Sun size={18} className="text-[#004eff]" /> : <Moon size={18} className="text-[#004eff]" />}
+              {theme === 'dark' ? <Sun size={18} className="text-[#85FF00]" /> : <Moon size={18} className="text-[#85FF00]" />}
             </Button>
           )}
+          
+          {isConnected && isReady && smartAccountAddress && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="mr-2 border-gray-600 bg-gray-900 hover:bg-gray-800 hover:border-[#85FF00]"
+                  >
+                    <Wallet size={14} className="mr-1 text-[#85FF00]" />
+                    <span className="text-xs">{shortenAddress(smartAccountAddress)}</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Smart Account: {smartAccountAddress}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+          
           <div className="rainbowkit-connect-button">
             <ConnectButton showBalance={false} />
           </div>

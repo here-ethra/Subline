@@ -14,6 +14,7 @@ import ArticlePage from "./pages/ArticlePage";
 import SearchPage from "./pages/SearchPage";
 import WelcomePage from "./pages/WelcomePage";
 import NotFound from "./pages/NotFound";
+import TipPage from "./pages/TipPage";
 import WalletRequired from "./components/WalletRequired";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,11 @@ const App = () => {
                   <Route path="/search" element={
                     <WalletRequired>
                       <SearchPage />
+                    </WalletRequired>
+                  } />
+                  <Route path="/tip" element={
+                    <WalletRequired>
+                      <TipPage />
                     </WalletRequired>
                   } />
                   <Route path="/" element={
