@@ -9,8 +9,7 @@ import {
   http, 
   createConfig, 
   createStorage,
-  type Address,
-  formatUnits
+  type Address
 } from 'wagmi';
 import { base } from 'wagmi/chains';
 import { 
@@ -23,7 +22,7 @@ import {
   LocalAccountSigner,
   type SmartContractAccount
 } from "@alchemy/aa-core";
-import { parseEther } from 'viem';
+import { parseEther, formatUnits } from 'viem';
 
 // Using Base mainnet for production
 const projectId = 'YOUR_WALLETCONNECT_PROJECT_ID'; // Replace with actual project ID in production

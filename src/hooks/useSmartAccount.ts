@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAccount } from 'wagmi';
 import type { Address } from 'wagmi';
-import { createSmartAccount, sendTip as sendTipWithSmartAccount } from '@/lib/rainbowKit';
+import { createSmartAccount, sendTip as sendTipWithSmartAccount, parseEther } from '@/lib/rainbowKit';
 import { toast } from '@/components/ui/sonner';
 
 interface SmartAccountState {
@@ -73,8 +73,6 @@ export function useSmartAccount() {
     }
 
     try {
-      // We'll get parseEther from the rainbowKit lib
-      const { parseEther } = await import('viem');
       const amountInWei = parseEther(amount);
       
       toast.promise(
