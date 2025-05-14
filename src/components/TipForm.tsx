@@ -19,18 +19,30 @@ export default function TipForm({ recipientAddress = '', onSuccess }: TipFormPro
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { sendTip, isReady, smartAccountAddress } = useSmartAccount();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Only enable the button if all fields are non-empty, amount is positive, and smart account is ready
+  const isButtonEnabled =
+    isReady &&
+    !!address &&
+    !!amount &&
+    !isSubmitting &&
+    !isNaN(Number(amount)) &&
+    Number(amount) > 0;
+
+  const handleSubmit = async (e: React.FormEvent | React.MouseEvent) => {
     e.preventDefault();
-    
+
     if (!address || !amount) {
       toast.error("Please provide both address and amount");
       return;
     }
-    
+    if (isNaN(Number(amount)) || Number(amount) <= 0) {
+      toast.error("Please enter a valid positive amount");
+      return;
+    }
     try {
       setIsSubmitting(true);
       const txHash = await sendTip(address, amount);
-      
+
       if (txHash && onSuccess) {
         onSuccess(txHash);
       }
@@ -63,7 +75,7 @@ export default function TipForm({ recipientAddress = '', onSuccess }: TipFormPro
               required
             />
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="amount">Amount (ETH)</Label>
             <Input
@@ -77,29 +89,29 @@ export default function TipForm({ recipientAddress = '', onSuccess }: TipFormPro
               required
             />
           </div>
-          
+
           <div className="space-y-1 pt-2">
             <p className="text-xs text-gray-400">From Smart Account: {smartAccountAddress ? `${smartAccountAddress.substring(0, 6)}...${smartAccountAddress.substring(smartAccountAddress.length - 4)}` : 'Loading...'}</p>
           </div>
+          <CardFooter>
+            <Button
+              type="submit"
+              className="w-full bg-[#85FF00] text-black hover:bg-[#85FF00]/80"
+              disabled={!isButtonEnabled}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing...
+                </>
+              ) : (
+                <>
+                  <Send className="mr-2 h-4 w-4" /> Send Gasless Tip
+                </>
+              )}
+            </Button>
+          </CardFooter>
         </form>
       </CardContent>
-      <CardFooter>
-        <Button 
-          onClick={handleSubmit}
-          className="w-full bg-[#85FF00] text-black hover:bg-[#85FF00]/80" 
-          disabled={!isReady || isSubmitting}
-        >
-          {isSubmitting ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing...
-            </>
-          ) : (
-            <>
-              <Send className="mr-2 h-4 w-4" /> Send Gasless Tip
-            </>
-          )}
-        </Button>
-      </CardFooter>
     </Card>
   );
 }

@@ -9,20 +9,18 @@ import {
   http, 
   createConfig, 
   createStorage,
-  type Address
 } from 'wagmi';
 import { base } from 'wagmi/chains';
 import { 
-  createAlchemySmartAccountClient, 
-  AlchemyProvider,
-  type SmartAccountSigner
+  createAlchemySmartAccountClient,
+  type SmartAccountClient
 } from "@alchemy/aa-alchemy";
 import { createMultiOwnerModularAccount } from "@alchemy/aa-accounts";
 import { 
   LocalAccountSigner,
   type SmartContractAccount
 } from "@alchemy/aa-core";
-import { parseEther, formatUnits } from 'viem';
+import { parseEther, formatUnits, type Address } from 'viem';
 
 // Using Base mainnet for production
 const projectId = 'YOUR_WALLETCONNECT_PROJECT_ID'; // Replace with actual project ID in production
@@ -45,40 +43,30 @@ export const wagmiConfig = createConfig({
 });
 
 // Smart account factory function
-export async function createSmartAccount(ownerAddress: Address, provider: any) {
+export async function createSmartAccount(ownerAddress: Address) {
   try {
     console.log("Creating smart account for:", ownerAddress);
-    
-    // Create a local account signer that acts as the owner of the smart account
-    const owner = {
-      signerType: "owner",
-      address: ownerAddress, 
-      signMessage: async () => {
-        console.log("Smart account attempting to sign message");
-        return "0x"; // This is a mock signature for gasless transactions
-      },
-      signTransaction: async () => {
-        console.log("Smart account attempting to sign transaction");
-        return "0x"; // This is a mock signature for gasless transactions
-      },
-    } as unknown as SmartAccountSigner;
 
-    // Create the smart account client
+    // The "owners" param should be an array of Address
+    const owners: Address[] = [ownerAddress];
+
+    // Create the smart account
+    const account = await createMultiOwnerModularAccount({
+      owners,
+      chain: base,
+      entryPoint: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
+      factoryAddress: "0x91E60e0613810449d098b0b5Ec8b51A0FE8c8985",
+    });
+
     const smartAccountClient = await createAlchemySmartAccountClient({
       apiKey: alchemyApiKey,
       chain: base,
-      signer: owner,
+      account,
       gasManagerConfig: {
-        policyId: "42", // Replace with actual policy ID in production
+        policyId: "42", // Replace with real policy ID in prod
       },
-      account: await createMultiOwnerModularAccount({
-        owner,
-        chain: base,
-        entryPoint: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789" as Address, // Base entry point
-        factoryAddress: "0x91E60e0613810449d098b0b5Ec8b51A0FE8c8985", // Standard factory
-      }),
     });
-    
+
     console.log("Smart account created:", smartAccountClient.account?.address);
     return smartAccountClient;
   } catch (error) {
@@ -88,19 +76,19 @@ export async function createSmartAccount(ownerAddress: Address, provider: any) {
 }
 
 // Function to send tip using smart account (gasless)
-export async function sendTip(toAddress: Address, amount: bigint, smartAccountClient: any) {
+export async function sendTip(toAddress: Address, amount: bigint, smartAccountClient: SmartAccountClient) {
   try {
     console.log(`Sending tip: ${formatUnits(amount, 18)} ETH to ${toAddress}`);
 
     // Prepare the transaction
-    const hash = await smartAccountClient.sendTransaction({
+    const tx = await smartAccountClient.sendTransaction({
       to: toAddress,
       value: amount,
       data: "0x",
     });
 
-    console.log("Transaction sent successfully:", hash);
-    return hash;
+    console.log("Transaction sent successfully:", tx);
+    return tx;
   } catch (error) {
     console.error("Error sending tip:", error);
     throw error;

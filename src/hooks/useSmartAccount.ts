@@ -1,9 +1,9 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAccount } from 'wagmi';
-import type { Address } from 'wagmi';
 import { createSmartAccount, sendTip as sendTipWithSmartAccount, parseEther } from '@/lib/rainbowKit';
 import { toast } from '@/components/ui/sonner';
+import type { Address } from 'viem';
 
 interface SmartAccountState {
   smartAccountAddress: string | null;
@@ -35,7 +35,7 @@ export function useSmartAccount() {
         setState(prev => ({ ...prev, isCreating: true, error: null }));
         
         console.log("Initializing smart account for address:", address);
-        const smartAccountClient = await createSmartAccount(address as Address, null);
+        const smartAccountClient = await createSmartAccount(address as Address);
         
         if (!smartAccountClient?.account?.address) {
           throw new Error("Failed to create smart account: No address returned");
@@ -74,7 +74,7 @@ export function useSmartAccount() {
 
     try {
       const amountInWei = parseEther(amount);
-      
+
       toast.promise(
         sendTipWithSmartAccount(
           toAddress as Address, 
@@ -84,7 +84,7 @@ export function useSmartAccount() {
         {
           loading: `Sending ${amount} ETH to ${toAddress}...`,
           success: (txHash) => {
-            return `Tip sent successfully! TX: ${txHash.slice(0, 10)}...`;
+            return `Tip sent successfully! TX: ${typeof txHash === 'string' ? txHash.slice(0, 10) : 'Success'}...`;
           },
           error: (error) => {
             return error instanceof Error ? error.message : "Unknown error sending tip";
