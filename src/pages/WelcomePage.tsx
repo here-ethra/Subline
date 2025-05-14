@@ -21,8 +21,23 @@ const WelcomePage = () => {
     }
   }, [isConnected, navigate, setTheme]);
 
+  // Effect to initialize Unicorn Studio if needed
+  useEffect(() => {
+    // The script is already included in the embedded div, so we don't need to add it again
+    // Just ensuring UnicornStudio initializes if it hasn't yet
+    if (window.UnicornStudio && !window.UnicornStudio.isInitialized) {
+      window.UnicornStudio.init();
+      window.UnicornStudio.isInitialized = true;
+    }
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden bg-black">
+      {/* Fixed Unicorn Studio component */}
+      <div className="fixed inset-0 z-10 pointer-events-none">
+        <div data-us-project="YvAmuVxNuitzoojCPKim" style={{ width: '1280px', height: '612px', margin: '0 auto' }} className="pointer-events-auto"></div>
+      </div>
+
       {/* Background gradients */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#85FF00]/5 via-transparent to-[#85FF00]/5 z-0 pointer-events-none"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(133,255,0,0.03),transparent_70%)] z-0 pointer-events-none"></div>
@@ -30,7 +45,7 @@ const WelcomePage = () => {
       {/* Noise texture overlay */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1Ii8+PC9zdmc+')] opacity-40 z-0 pointer-events-none"></div>
       
-      <header className="p-4 flex justify-between items-center relative z-10 border-b border-gray-800/30">
+      <header className="p-4 flex justify-between items-center relative z-20 border-b border-gray-800/30">
         <div>
           <img src="/subline.png" alt="Subline logo" className="h-8 w-auto" />
         </div>
@@ -39,7 +54,7 @@ const WelcomePage = () => {
         </div>
       </header>
       
-      <main className="flex-1 flex flex-col items-center justify-center p-6 text-center relative z-10">
+      <main className="flex-1 flex flex-col items-center justify-center p-6 text-center relative z-20">
         <div className="max-w-3xl w-full space-y-12 animate-fade-in">
           {/* Hero section */}
           <div className="space-y-6 pt-8">
@@ -125,9 +140,29 @@ const WelcomePage = () => {
         </div>
       </main>
       
-      <footer className="p-6 text-center text-sm text-gray-500 relative z-10 border-t border-gray-800/30">
+      <footer className="p-6 text-center text-sm text-gray-500 relative z-20 border-t border-gray-800/30">
         <p>© 2024 Subline · Built on Base</p>
       </footer>
+
+      {/* Unicorn Studio Script */}
+      <script
+        type="text/javascript"
+        dangerouslySetInnerHTML={{
+          __html: `
+            !function(){
+              if(!window.UnicornStudio){
+                window.UnicornStudio={isInitialized:!1};
+                var i=document.createElement("script");
+                i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.20/dist/unicornStudio.umd.js",
+                i.onload=function(){
+                  window.UnicornStudio.isInitialized||(UnicornStudio.init(),window.UnicornStudio.isInitialized=!0)
+                };
+                (document.head || document.body).appendChild(i)
+              }
+            }();
+          `
+        }}
+      />
     </div>
   );
 };
