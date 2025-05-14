@@ -2,15 +2,19 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
-import { FileText, Search, Layers, Zap } from 'lucide-react';
+import { FileText, Search, Layers, Zap, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { toast } from '@/components/ui/sonner';
 
 const WelcomePage = () => {
   const { isConnected } = useAccount();
   const navigate = useNavigate();
   const { setTheme } = useTheme();
+  const [animationError, setAnimationError] = useState(false);
+  const [animationLoading, setAnimationLoading] = useState(true);
   
   useEffect(() => {
     // Set theme to dark by default for welcome page
@@ -21,26 +25,99 @@ const WelcomePage = () => {
     }
   }, [isConnected, navigate, setTheme]);
 
-  // Effect to initialize Unicorn Studio if needed
+  // Effect to initialize Unicorn Studio with error handling
   useEffect(() => {
-    // The script is already included in the embedded div, so we don't need to add it again
-    // Just ensuring UnicornStudio initializes if it hasn't yet
-    if (window.UnicornStudio && !window.UnicornStudio.isInitialized) {
-      window.UnicornStudio.init();
-      window.UnicornStudio.isInitialized = true;
+    const initTimeout = setTimeout(() => {
+      // If animation is still loading after 8 seconds, consider it failed
+      if (animationLoading) {
+        setAnimationError(true);
+        setAnimationLoading(false);
+        toast.error("Animation failed to load", {
+          description: "The welcome animation couldn't be initialized. Showing fallback content instead."
+        });
+      }
+    }, 8000);
+
+    try {
+      // The script is already included in the embedded div
+      if (window.UnicornStudio) {
+        if (!window.UnicornStudio.isInitialized) {
+          try {
+            window.UnicornStudio.init();
+            window.UnicornStudio.isInitialized = true;
+            setAnimationLoading(false);
+          } catch (error) {
+            console.error("Failed to initialize UnicornStudio:", error);
+            setAnimationError(true);
+            setAnimationLoading(false);
+          }
+        } else {
+          setAnimationLoading(false);
+        }
+      } else {
+        // Create a backup script loader if the embedded one fails
+        const script = document.createElement('script');
+        script.src = "https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.20/dist/unicornStudio.umd.js";
+        
+        script.onload = () => {
+          try {
+            if (window.UnicornStudio && !window.UnicornStudio.isInitialized) {
+              window.UnicornStudio.init();
+              window.UnicornStudio.isInitialized = true;
+              setAnimationLoading(false);
+            }
+          } catch (error) {
+            console.error("Failed to initialize UnicornStudio after script load:", error);
+            setAnimationError(true);
+            setAnimationLoading(false);
+          }
+        };
+        
+        script.onerror = () => {
+          console.error("Failed to load UnicornStudio script");
+          setAnimationError(true);
+          setAnimationLoading(false);
+        };
+        
+        (document.head || document.body).appendChild(script);
+      }
+    } catch (error) {
+      console.error("UnicornStudio initialization error:", error);
+      setAnimationError(true);
+      setAnimationLoading(false);
     }
-  }, []);
+
+    return () => clearTimeout(initTimeout);
+  }, [animationLoading]);
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden bg-black">
-      {/* Fixed Unicorn Studio component */}
+      {/* Fixed Unicorn Studio component with error handling */}
       <div className="fixed inset-0 z-10 pointer-events-none">
-        <div data-us-project="YvAmuVxNuitzoojCPKim" style={{ width: '1280px', height: '612px', margin: '0 auto' }} className="pointer-events-auto"></div>
+        {!animationError ? (
+          <div 
+            data-us-project="YvAmuVxNuitzoojCPKim" 
+            style={{ width: '1280px', height: '612px', margin: '0 auto' }} 
+            className="pointer-events-auto"
+          />
+        ) : (
+          <div className="pointer-events-none w-full h-full flex items-center justify-center">
+            <div className="max-w-lg mx-auto pointer-events-auto">
+              <Alert variant="destructive" className="bg-black/80 backdrop-blur-sm border-gray-800">
+                <AlertTriangle className="h-5 w-5 text-[#85FF00]" />
+                <AlertTitle className="text-[#85FF00]">Animation Error</AlertTitle>
+                <AlertDescription className="text-gray-300">
+                  The WebGL animation failed to load. This might be due to browser compatibility or resource constraints.
+                </AlertDescription>
+              </Alert>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Background gradients */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#85FF00]/5 via-transparent to-[#85FF00]/5 z-0 pointer-events-none"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(133,255,0,0.03),transparent_70%)] z-0 pointer-events-none"></div>
+      {/* Background gradients - enhanced when animation fails */}
+      <div className={`absolute inset-0 bg-gradient-to-br ${animationError ? 'from-[#85FF00]/10 via-transparent to-[#85FF00]/10' : 'from-[#85FF00]/5 via-transparent to-[#85FF00]/5'} z-0 pointer-events-none`}></div>
+      <div className={`absolute inset-0 ${animationError ? 'bg-[radial-gradient(circle_at_center,rgba(133,255,0,0.05),transparent_70%)]' : 'bg-[radial-gradient(circle_at_center,rgba(133,255,0,0.03),transparent_70%)]'} z-0 pointer-events-none`}></div>
       
       {/* Noise texture overlay */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1Ii8+PC9zdmc+')] opacity-40 z-0 pointer-events-none"></div>
