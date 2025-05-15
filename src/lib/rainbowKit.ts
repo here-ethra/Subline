@@ -33,11 +33,10 @@ const { connectors } = getDefaultWallets({
   projectId,
 });
 
+// Fix: use 'transport' instead of 'transports'
 export const wagmiConfig = createConfig({
   chains: [base],
-  transports: {
-    [base.id]: http(),
-  },
+  transport: http(),
   connectors,
   storage: createStorage({ storage: window.localStorage }),
 });
@@ -96,3 +95,4 @@ export async function sendTip(toAddress: Address, amount: bigint, smartAccountCl
 }
 
 export { RainbowKitProvider, parseEther };
+
