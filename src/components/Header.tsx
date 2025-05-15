@@ -106,7 +106,7 @@ const Header = ({ onSearch, showSearch = true }: HeaderProps) => {
             </TooltipProvider>
           )}
 
-          <div className="rainbowkit-connect-button">
+          <div>
             <ConnectButton showBalance={false} />
           </div>
         </div>
