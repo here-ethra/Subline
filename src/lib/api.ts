@@ -3,7 +3,9 @@ import OpenAI from "openai";
 
 // News API configuration
 const NEWS_API_KEY = "pub_86219f1b7c2997d6c78e114577f2a543229b5";
-const OPENAI_API_KEY = "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";
+// DO NOT hardcode secret keys in frontend code!
+// In production, set `VITE_OPENAI_API_KEY` as an environment variable using Lovable (via Supabase Secrets integration).
+const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY as string;
 
 // NewsData.io API base URL
 const NEWS_API_BASE_URL = "https://newsdata.io/api/1";
