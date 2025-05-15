@@ -1,24 +1,24 @@
 
 import '@rainbow-me/rainbowkit/styles.css';
 
-import { 
+import {
   getDefaultWallets,
-  RainbowKitProvider 
+  RainbowKitProvider
 } from '@rainbow-me/rainbowkit';
-import { 
-  http, 
-  createConfig, 
+import {
+  http,
+  createConfig,
   createStorage,
 } from 'wagmi';
 import { base } from 'wagmi/chains';
-import { 
+import {
   createAlchemySmartAccountClient,
-  type SmartAccountClient
+  // no SmartAccountClient exported here in latest versions
 } from "@alchemy/aa-alchemy";
 import { createMultiOwnerModularAccount } from "@alchemy/aa-accounts";
-import { 
+import {
   LocalAccountSigner,
-  type SmartContractAccount
+  type SmartContractAccount,
 } from "@alchemy/aa-core";
 import { parseEther, formatUnits, type Address } from 'viem';
 
@@ -33,10 +33,12 @@ const { connectors } = getDefaultWallets({
   projectId,
 });
 
-// Fix: use 'transport' instead of 'transports'
+// *** FIX: Use "transports" for wagmi v2 ***
 export const wagmiConfig = createConfig({
   chains: [base],
-  transport: http(),
+  transports: {
+    [base.id]: http(),
+  },
   connectors,
   storage: createStorage({ storage: window.localStorage }),
 });
@@ -53,8 +55,8 @@ export async function createSmartAccount(ownerAddress: Address) {
     const account = await createMultiOwnerModularAccount({
       owners,
       chain: base,
-      entryPoint: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
-      factoryAddress: "0x91E60e0613810449d098b0b5Ec8b51A0FE8c8985",
+      entryPoint: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789" as Address,
+      factoryAddress: "0x91E60e0613810449d098b0b5Ec8b51A0FE8c8985" as Address,
     });
 
     const smartAccountClient = await createAlchemySmartAccountClient({
@@ -75,7 +77,7 @@ export async function createSmartAccount(ownerAddress: Address) {
 }
 
 // Function to send tip using smart account (gasless)
-export async function sendTip(toAddress: Address, amount: bigint, smartAccountClient: SmartAccountClient) {
+export async function sendTip(toAddress: Address, amount: bigint, smartAccountClient: any) {
   try {
     console.log(`Sending tip: ${formatUnits(amount, 18)} ETH to ${toAddress}`);
 
