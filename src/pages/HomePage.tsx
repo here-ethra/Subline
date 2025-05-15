@@ -71,9 +71,6 @@ const HomePage = () => {
               <Send size={14} className="mr-2" />
               Try Gasless Tipping
             </Button>
-            <div className="text-sm text-gray-400">
-              {ensName || address?.substring(0, 6) + '...' + address?.substring(address.length - 4)}
-            </div>
           </div>
         </div>
         
